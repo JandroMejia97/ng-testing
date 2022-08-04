@@ -24,10 +24,10 @@ A continuación, se muestra una prueba para cada una de estas tecnologías:
     
     ```jsx
     describe("A suite is just a function", () => {
-    	const a;
-    	test("and so is a spec", () => {
-    		a = true; expect (a).toBe(true);
-    	});
+      const a;
+      test("and so is a spec", () => {
+        a = true; expect (a).toBe(true);
+      });
     });
     ```
     
@@ -35,10 +35,10 @@ A continuación, se muestra una prueba para cada una de estas tecnologías:
     
     ```jsx
     describe("A suite is just a function", () => {
-    	const a;
-    	it("and so is a spec", () => {
-    		a = true; expect (a).toBe(true);
-    	});
+      const a;
+      it("and so is a spec", () => {
+        a = true; expect (a).toBe(true);
+      });
     });
     ```
     
@@ -55,12 +55,12 @@ En las pruebas, se tiene algo llamado “test matchers”, que prácticamente so
     
     ```jsx
     test('null', () {
-    	const n = null;
-    	expect(n).toBeNull();
-    	expect(n).toBeDefined();
-    	expect(n).not.toBeUndefined();
-    	expect(n).not.toBeTruthy();
-    	expect(n).toBeFalsy();
+      const n = null;
+      expect(n).toBeNull();
+      expect(n).toBeDefined();
+      expect(n).not.toBeUndefined();
+      expect(n).not.toBeTruthy();
+      expect(n).toBeFalsy();
     });
     ```
     
@@ -68,12 +68,12 @@ En las pruebas, se tiene algo llamado “test matchers”, que prácticamente so
     
     ```jsx
     it('null', () {
-    	const n = null;
-    	expect(n).toBeNull();
-    	expect(n).toBeDefined();
-    	expect(n).not.toBeUndefined();
-    	expect(n).not.toBeTruthy();
-    	expect(n).toBeFalsy();
+      const n = null;
+      expect(n).toBeNull();
+      expect(n).toBeDefined();
+      expect(n).not.toBeUndefined();
+      expect(n).not.toBeTruthy();
+      expect(n).toBeFalsy();
     });
     ```
     
