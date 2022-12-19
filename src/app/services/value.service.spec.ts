@@ -4,10 +4,12 @@ import { ValueService } from './value.service';
 
 fdescribe('ValueService', () => {
   let service: ValueService;
-  const testValue = 'Testing'
+  const testValue = 'Testing';
 
   beforeEach(() => {
-    TestBed.configureTestingModule({});
+    TestBed.configureTestingModule({
+      providers: [ValueService]
+    });
     service = TestBed.inject(ValueService);
   });
 
