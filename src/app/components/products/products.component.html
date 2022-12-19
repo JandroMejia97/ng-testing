@@ -1,5 +1,13 @@
 <main class="container">
   <section>
     <h1>Products Component</h1>
+    <div class="grid">
+      <figure *ngFor="let product of products">
+        <img [src]="product.images[0]" [alt]="product.title">
+        <figcaption>
+          {{ product.title }} - {{ product.price | currency }}
+        </figcaption>
+      </figure>
+    </div>
   </section>
 </main>
