@@ -15,7 +15,7 @@ export class ProductService {
   private apiUrl = `${environment.apiUrl}/api/v1`;
 
   constructor(
-    private http: HttpClient
+    private httpClient: HttpClient
   ) { }
 
   getByCategory(categoryId: string, limit?: number, offset?: number){
@@ -24,11 +24,11 @@ export class ProductService {
       params = params.set('limit', limit);
       params = params.set('offset', offset);
     }
-    return this.http.get<Product[]>(`${this.apiUrl}/categories/${categoryId}/products`, { params })
+    return this.httpClient.get<Product[]>(`${this.apiUrl}/categories/${categoryId}/products`, { params })
   }
 
   getAllSimple() {
-    return this.http.get<Product[]>(`${this.apiUrl}/products`);
+    return this.httpClient.get<Product[]>(`${this.apiUrl}/products`);
   }
 
   getAll(limit?: number, offset?: number) {
@@ -37,7 +37,7 @@ export class ProductService {
       params = params.set('limit', limit);
       params = params.set('offset', offset);
     }
-    return this.http.get<Product[]>(`${this.apiUrl}/products`, { params })
+    return this.httpClient.get<Product[]>(`${this.apiUrl}/products`, { params })
     .pipe(
       retry(3),
       map(products => products.map(item => {
@@ -57,7 +57,7 @@ export class ProductService {
   }
 
   getOne(id: string) {
-    return this.http.get<Product>(`${this.apiUrl}/products/${id}`)
+    return this.httpClient.get<Product>(`${this.apiUrl}/products/${id}`)
     .pipe(
       catchError((error: HttpErrorResponse) => {
         let errorMessage = 'Ups algo salio mal';
@@ -76,14 +76,14 @@ export class ProductService {
   }
 
   create(dto: CreateProductDTO) {
-    return this.http.post<Product>(`${this.apiUrl}/products`, dto);
+    return this.httpClient.post<Product>(`${this.apiUrl}/products`, dto);
   }
 
   update(id: string, dto: UpdateProductDTO) {
-    return this.http.put<Product>(`${this.apiUrl}/products/${id}`, dto);
+    return this.httpClient.put<Product>(`${this.apiUrl}/products/${id}`, dto);
   }
 
   delete(id: string) {
-    return this.http.delete<boolean>(`${this.apiUrl}/products/${id}`);
+    return this.httpClient.delete<boolean>(`${this.apiUrl}/products/${id}`);
   }
 }
