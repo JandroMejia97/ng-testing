@@ -5,7 +5,11 @@ import {
 } from '@angular/common/http/testing';
 
 import { ProductService } from './product.service';
-import { Product, CreateProductDTO } from '@models/product.model';
+import {
+  Product,
+  CreateProductDTO,
+  UpdateProductDTO,
+} from '@models/product.model';
 import { environment } from '@environments/environment';
 import {
   generateManyProducts,
@@ -239,10 +243,115 @@ fdescribe('ProductService', () => {
       });
 
       // HttpClientTestingModule will intercept the request and return the mockProducts
-      const request = httpController.expectOne(`${apiUrl}/products`);
+      const request = httpController.expectOne({
+        url: `${apiUrl}/products`,
+        method: 'POST',
+      });
       request.flush(mockProduct);
       expect(request.request.body).toEqual(product);
       expect(request.request.method).toBe('POST');
     }));
+  });
+
+  describe('Tests for delete', () => {
+    it('should return a void', waitForAsync(() => {
+      // Arrange
+      const productId = '1';
+      // Act
+      productService.delete(productId).subscribe({
+        next: (response) => {
+          // Assert
+          expect(response).toBeUndefined();
+        },
+      });
+
+      // HttpClientTestingModule will intercept the request and return the mockProducts
+      const request = httpController.expectOne(
+        `${apiUrl}/products/${productId}`
+      );
+      expect(request.request.method).toBe('DELETE');
+    }));
+  });
+
+  describe('Tests for update', () => {
+    it('should update a product', waitForAsync(() => {
+      // Arrange
+      const mockProduct = generateOneProduct();
+      const productId = '1';
+      const product: UpdateProductDTO = {
+        title: 'Test',
+      };
+
+      // Act
+      productService.update(productId, {...product}).subscribe({
+        next: (product) => {
+          // Assert
+          expect(product).toEqual(mockProduct);
+        },
+      });
+
+      // HttpClientTestingModule will intercept the request and return the mockProducts
+      const request = httpController.expectOne(
+        `${apiUrl}/products/${productId}`
+      );
+      request.flush(mockProduct);
+
+      // Assert
+      expect(request.request.method).toBe('PUT');
+      expect(request.request.body).toEqual(product);
+    }));
+
+  });
+
+  describe('Tests for fetchReadAndUpdate', () => {
+    // Arrange
+    let mockProduct: Product;
+    let productId: string;
+    let product: UpdateProductDTO;
+
+    beforeAll(() => {
+      mockProduct = generateOneProduct();
+      productId = '1';
+      product = {
+        title: 'Test',
+      };
+    });
+
+    it('should update and read a product', waitForAsync(() => {
+      // Act
+      productService.fetchReadAndUpdate(productId, {...product}).subscribe({
+        next: ([getProduct, updatedProduct]) => {
+          // Assert
+          expect(getProduct).toEqual(mockProduct);
+          expect(updatedProduct).toEqual({
+            ...mockProduct,
+            ...product,
+          });
+        },
+      });
+
+      // HttpClientTestingModule will intercept the request and return the mockProducts
+      const getRequest = httpController.expectOne({
+        url: `${apiUrl}/products/${productId}`,
+        method: 'GET',
+      });
+      getRequest.flush(mockProduct);
+
+      const putRequest = httpController.expectOne({
+        url: `${apiUrl}/products/${productId}`,
+        method: 'PUT',
+      });
+      putRequest.flush({
+        ...mockProduct,
+        ...product,
+      });
+
+      // Assert
+      expect(getRequest.request.method).toBe('GET');
+
+      expect(putRequest.request.method).toBe('PUT');
+      expect(putRequest.request.body).toEqual(product);
+    }));
+
   });
 });
