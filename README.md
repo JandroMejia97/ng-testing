@@ -21,7 +21,7 @@ Algo importante a tener en cuenta de los frameworks de testing en JS, es que pr�
 A continuación, se muestra una prueba para cada una de estas tecnologías:
 
 - **Jest**
-    
+
     ```jsx
     describe("A suite is just a function", () => {
       const a;
@@ -30,9 +30,9 @@ A continuación, se muestra una prueba para cada una de estas tecnologías:
       });
     });
     ```
-    
+
 - **Jasmine**
-    
+
     ```jsx
     describe("A suite is just a function", () => {
       const a;
@@ -41,7 +41,6 @@ A continuación, se muestra una prueba para cada una de estas tecnologías:
       });
     });
     ```
-    
 
 Como habrás notado, la única gran diferencia es que Jasmine utiliza la palabra reservada `it`, mientras que Jest utiliza `test`. Pero no solo Jasmine usa esta palabra reservada, sino otros frameworks como Mocka, chai, etc.
 
@@ -52,7 +51,7 @@ Esto último es tan común, que Jest permite utilizar cualquiera de estas palabr
 En las pruebas, se tiene algo llamado “test matchers”, que prácticamente son funciones que nos permiten hacer comprobaciones. A continuación, se muestran algunos ejemplos de matchers de Jest y Jasmine.
 
 - **Jest**
-    
+
     ```jsx
     test('null', () {
       const n = null;
@@ -63,9 +62,9 @@ En las pruebas, se tiene algo llamado “test matchers”, que prácticamente so
       expect(n).toBeFalsy();
     });
     ```
-    
+
 - **Jasmine**
-    
+
     ```jsx
     it('null', () {
       const n = null;
@@ -76,7 +75,6 @@ En las pruebas, se tiene algo llamado “test matchers”, que prácticamente so
       expect(n).toBeFalsy();
     });
     ```
-    
 
 Como pudiste observar, los matchers de Jest y Jasmine son exactamente iguales. Dicho esto, te darás cuenta que la herramienta que decidas usar, al final, no será un problema, ya que los test se escriben de igual manera.
 
@@ -86,28 +84,25 @@ Si creas un proyecto desde la CLI de Angular, te darás cuenta que en la raíz s
 
 Si abres dicho archivo, verás una serie de plugins definidos, entre ellos, uno que se llama **karma-chrome-launcer**, esto se debe a que nuestras aplicaciones se ejecutan en un navegador y Karma utiliza el motor de Chrome para ejecutar las pruebas.
 
-<aside>
-💡 Cabe mencionar, que es acá dónde podrías cambiar Chrome por cualquier otro motor de tu preferencia.
-</aside>
+>💡 Cabe mencionar, que es acá dónde podrías cambiar Chrome por cualquier otro motor de tu preferencia.
 
 Karma, de manera automática leerá todos los archivos que terminen en **.spec.ts**, ya que es en esos archivos donde normalmente se definen las pruebas.
 
-<aside>
-💡 Se usa el sufijo **spec** porque en estos archivos se definen las especificaciones (o los contratos) que nuestro componente debe cumplir para funcionar correctamente.
-</aside>
+>💡 Se usa el sufijo **spec** porque en estos archivos se definen las especificaciones (o los contratos) que nuestro componente debe cumplir para funcionar correctamente.
 
 ### Tests en WSL
 
-    Ten en cuenta que para ejecutar estos test en WSL, tendrás que realizar la siguiente configuración:
+Ten en cuenta que para ejecutar estos test en WSL, tendrás que realizar la siguiente configuración:
 
-    ```bash
-    sudo apt update && sudo apt -y upgrade && sudo apt -y autoremove
-    
-    wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
-    sudo apt -y install ./google-chrome-stable_current_amd64.deb
-    
-    google-chrome --version
-    ```
+```bash
+sudo apt update && sudo apt -y upgrade && sudo apt -y autoremove
+
+wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+
+sudo apt -y install ./google-chrome-stable_current_amd64.deb
+
+google-chrome --version
+```
 
 ## Secciones
 
