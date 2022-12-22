@@ -354,4 +354,100 @@ fdescribe('ProductService', () => {
     }));
 
   });
+
+  describe('Test for getByCategory', () => {
+    let mockProducts: Product[];
+    let categoryId: string;
+    const limit = 10;
+
+    beforeAll(() => {
+      mockProducts = generateManyProducts(3);
+      categoryId = '1';
+    });
+
+    it('should return an array of products', waitForAsync(() => {
+      // Act
+      productService.getByCategory(categoryId).subscribe({
+        next: (products) => {
+          // Assert
+          expect(products.length).toBe(mockProducts.length);
+        },
+      });
+
+      // HttpClientTestingModule will intercept the request and return the mockProducts
+      const request = httpController.expectOne(
+        `${apiUrl}/categories/${categoryId}/products`
+      );
+
+      request.flush(mockProducts);
+      expect(request.request.method).toBe('GET');
+    }));
+
+    it('should send a request to the API with the correct params', waitForAsync(() => {
+      const offset = 5;
+
+      // Act
+      productService.getByCategory(categoryId, limit, offset).subscribe({
+        next: (products) => {
+          // Assert
+          expect(products.length).toBe(mockProducts.length);
+        }
+      });
+
+      // HttpClientTestingModule will intercept the request and return the mockProducts
+      const request = httpController.expectOne({
+        url: `${apiUrl}/categories/${categoryId}/products?limit=${limit}&offset=${offset}`,
+        method: 'GET',
+      });
+
+      request.flush(mockProducts);
+
+      const { params } = request.request;
+      expect(params.get('limit')).toBe(limit.toString());
+      expect(params.get('offset')).toBe(offset.toString());
+    }));
+
+    it('should ignore an `undefined` offset as query param in the request', waitForAsync(() => {
+      // Arrange
+      const offset = undefined;
+
+      // Act
+      productService.getByCategory(categoryId, limit, offset).subscribe({
+        next: (products) => {
+          // Assert
+          expect(products.length).toBe(mockProducts.length);
+        },
+      });
+
+      // HttpClientTestingModule will intercept the request and return the mockProducts
+      const request = httpController.expectOne(`${apiUrl}/categories/${categoryId}/products`);
+      request.flush(mockProducts);
+
+      const { params } = request.request;
+      expect(params.get('limit')).toBeNull();
+      expect(params.get('offset')).toBeNull();
+    }));
+
+    it('should ignore an invalid limit as query param in the request', waitForAsync(() => {
+      // Arrange
+      const limit = -1;
+      const offset = 0;
+
+      // Act
+      productService.getByCategory(categoryId, limit, offset).subscribe({
+        next: (products) => {
+          // Assert
+          expect(products.length).toBe(mockProducts.length);
+        },
+      });
+
+      // HttpClientTestingModule will intercept the request and return the mockProducts
+      const request = httpController.expectOne(`${apiUrl}/categories/${categoryId}/products`);
+      request.flush(mockProducts);
+
+      const { params } = request.request;
+      expect(params.get('limit')).toBeNull();
+      expect(params.get('offset')).toBeNull();
+    }));
+  });
 });

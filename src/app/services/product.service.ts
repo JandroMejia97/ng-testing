@@ -20,7 +20,7 @@ export class ProductService {
 
   getByCategory(categoryId: string, limit?: number, offset?: number){
     let params = new HttpParams();
-    if (limit && offset != null) {
+    if (limit && limit > 0 && !!offset && offset >= 0) {
       params = params.set('limit', limit);
       params = params.set('offset', offset);
     }
