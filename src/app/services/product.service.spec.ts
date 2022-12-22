@@ -3,6 +3,7 @@ import {
   HttpClientTestingModule,
   HttpTestingController,
 } from '@angular/common/http/testing';
+import { HttpStatusCode, HTTP_INTERCEPTORS } from '@angular/common/http';
 
 import { ProductService } from './product.service';
 import {
@@ -15,20 +16,31 @@ import {
   generateManyProducts,
   generateOneProduct,
 } from '@models/mocks/product.mock';
-import { HttpStatusCode } from '@angular/common/http';
+import { TokenInterceptor } from '../interceptors/token.interceptor';
+import { TokenService } from './token.service';
 
 describe('ProductService', () => {
   let productService: ProductService;
   let httpController: HttpTestingController;
+  let tokenService: TokenService;
   const apiUrl = `${environment.apiUrl}/api/v1`;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [HttpClientTestingModule],
-      providers: [ProductService],
+      providers: [
+        ProductService,
+        TokenService,
+        {
+          provide: HTTP_INTERCEPTORS,
+          useClass: TokenInterceptor,
+          multi: true,
+        },
+      ],
     });
     productService = TestBed.inject(ProductService);
     httpController = TestBed.inject(HttpTestingController);
+    tokenService = TestBed.inject(TokenService);
   });
 
   afterEach(() => {
@@ -284,7 +296,7 @@ describe('ProductService', () => {
       };
 
       // Act
-      productService.update(productId, {...product}).subscribe({
+      productService.update(productId, { ...product }).subscribe({
         next: (product) => {
           // Assert
           expect(product).toEqual(mockProduct);
@@ -301,7 +313,6 @@ describe('ProductService', () => {
       expect(request.request.method).toBe('PUT');
       expect(request.request.body).toEqual(product);
     }));
-
   });
 
   describe('Tests for fetchReadAndUpdate', () => {
@@ -320,7 +331,7 @@ describe('ProductService', () => {
 
     it('should update and read a product', waitForAsync(() => {
       // Act
-      productService.fetchReadAndUpdate(productId, {...product}).subscribe({
+      productService.fetchReadAndUpdate(productId, { ...product }).subscribe({
         next: ([getProduct, updatedProduct]) => {
           // Assert
           expect(getProduct).toEqual(mockProduct);
@@ -353,7 +364,6 @@ describe('ProductService', () => {
       expect(putRequest.request.method).toBe('PUT');
       expect(putRequest.request.body).toEqual(product);
     }));
-
   });
 
   describe('Test for getByCategory', () => {
@@ -392,7 +402,7 @@ describe('ProductService', () => {
         next: (products) => {
           // Assert
           expect(products.length).toBe(mockProducts.length);
-        }
+        },
       });
 
       // HttpClientTestingModule will intercept the request and return the mockProducts
@@ -421,7 +431,9 @@ describe('ProductService', () => {
       });
 
       // HttpClientTestingModule will intercept the request and return the mockProducts
-      const request = httpController.expectOne(`${apiUrl}/categories/${categoryId}/products`);
+      const request = httpController.expectOne(
+        `${apiUrl}/categories/${categoryId}/products`
+      );
       request.flush(mockProducts);
 
       const { params } = request.request;
@@ -443,7 +455,9 @@ describe('ProductService', () => {
       });
 
       // HttpClientTestingModule will intercept the request and return the mockProducts
-      const request = httpController.expectOne(`${apiUrl}/categories/${categoryId}/products`);
+      const request = httpController.expectOne(
+        `${apiUrl}/categories/${categoryId}/products`
+      );
       request.flush(mockProducts);
 
       const { params } = request.request;
@@ -453,7 +467,7 @@ describe('ProductService', () => {
   });
 
   describe('Test for getOne', () => {
-    const productId =  '1';
+    const productId = '1';
     it('should return a product', waitForAsync(() => {
       // Arrange
       const mockProduct = generateOneProduct();
@@ -567,5 +581,35 @@ describe('ProductService', () => {
       request.flush(null, mockError);
       expect(request.request.method).toBe('GET');
     }));
-  })
+  });
+
+  describe('Test for token interceptor', () => {
+    it('should add the token to the request', waitForAsync(() => {
+      // Arrange
+      const mockProduct = generateOneProduct();
+
+      const token = '1234567890';
+      spyOn(tokenService, 'getToken').and.returnValue(token);
+
+      // Act
+      productService.getOne('1').subscribe({
+        next: (product) => {
+          // Assert
+          expect(product).toEqual(mockProduct);
+        },
+      });
+
+      // HttpClientTestingModule will intercept the request and return the mockProducts
+      const request = httpController.expectOne(
+        `${apiUrl}/products/1`
+      );
+
+      request.flush(mockProduct);
+
+      const { headers, method } = request.request;
+      expect(method).toBe('GET');
+      expect(headers.get('Authorization')).toBe(`Bearer ${token}`);
+    }));
+  });
+
 });
