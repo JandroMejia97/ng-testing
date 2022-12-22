@@ -15,8 +15,9 @@ import {
   generateManyProducts,
   generateOneProduct,
 } from '@models/mocks/product.mock';
+import { HttpStatusCode } from '@angular/common/http';
 
-fdescribe('ProductService', () => {
+describe('ProductService', () => {
   let productService: ProductService;
   let httpController: HttpTestingController;
   const apiUrl = `${environment.apiUrl}/api/v1`;
@@ -452,15 +453,10 @@ fdescribe('ProductService', () => {
   });
 
   describe('Test for getOne', () => {
-    let mockProduct: Product;
-    let productId: string;
-
-    beforeAll(() => {
-      mockProduct = generateOneProduct();
-      productId = '1';
-    });
-
+    const productId =  '1';
     it('should return a product', waitForAsync(() => {
+      // Arrange
+      const mockProduct = generateOneProduct();
       // Act
       productService.getOne(productId).subscribe({
         next: (product) => {
@@ -479,6 +475,12 @@ fdescribe('ProductService', () => {
     }));
 
     it('should throw an error if the product is not found', waitForAsync(() => {
+      // Arrange
+      const mockError = {
+        status: HttpStatusCode.NotFound,
+        statusText: 'Not Found',
+      };
+
       // Act
       productService.getOne(productId).subscribe({
         error: (err) => {
@@ -492,11 +494,17 @@ fdescribe('ProductService', () => {
         `${apiUrl}/products/${productId}`
       );
 
-      request.flush(null, { status: 404, statusText: 'Not Found' });
+      request.flush(null, mockError);
       expect(request.request.method).toBe('GET');
     }));
 
     it('should throw an error if the user is not authorized', waitForAsync(() => {
+      // Arrange
+      const mockError = {
+        status: HttpStatusCode.Unauthorized,
+        statusText: 'Not Found',
+      };
+
       // Act
       productService.getOne(productId).subscribe({
         error: (err) => {
@@ -510,11 +518,16 @@ fdescribe('ProductService', () => {
         `${apiUrl}/products/${productId}`
       );
 
-      request.flush(null, { status: 401, statusText: 'Unauthorized' });
+      request.flush(null, mockError);
       expect(request.request.method).toBe('GET');
     }));
 
     it('should throw an error if the server not respond', waitForAsync(() => {
+      // Arrange
+      const mockError = {
+        status: HttpStatusCode.Conflict,
+        statusText: 'Not Found',
+      };
       // Act
       productService.getOne(productId).subscribe({
         error: (err) => {
@@ -528,11 +541,16 @@ fdescribe('ProductService', () => {
         `${apiUrl}/products/${productId}`
       );
 
-      request.flush(null, { status: 409 , statusText: 'Unknown Error' });
+      request.flush(null, mockError);
       expect(request.request.method).toBe('GET');
     }));
 
     it('should throw an error if there is an unknown error', waitForAsync(() => {
+      // Arrange
+      const mockError = {
+        status: HttpStatusCode.InternalServerError,
+        statusText: 'Not Found',
+      };
       // Act
       productService.getOne(productId).subscribe({
         error: (err) => {
@@ -546,7 +564,7 @@ fdescribe('ProductService', () => {
         `${apiUrl}/products/${productId}`
       );
 
-      request.flush(null, { status: 500 , statusText: 'Unknown Error' });
+      request.flush(null, mockError);
       expect(request.request.method).toBe('GET');
     }));
   })
