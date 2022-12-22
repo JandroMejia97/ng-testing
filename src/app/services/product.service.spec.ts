@@ -450,4 +450,104 @@ fdescribe('ProductService', () => {
       expect(params.get('offset')).toBeNull();
     }));
   });
+
+  describe('Test for getOne', () => {
+    let mockProduct: Product;
+    let productId: string;
+
+    beforeAll(() => {
+      mockProduct = generateOneProduct();
+      productId = '1';
+    });
+
+    it('should return a product', waitForAsync(() => {
+      // Act
+      productService.getOne(productId).subscribe({
+        next: (product) => {
+          // Assert
+          expect(product).toEqual(mockProduct);
+        },
+      });
+
+      // HttpClientTestingModule will intercept the request and return the mockProducts
+      const request = httpController.expectOne(
+        `${apiUrl}/products/${productId}`
+      );
+
+      request.flush(mockProduct);
+      expect(request.request.method).toBe('GET');
+    }));
+
+    it('should throw an error if the product is not found', waitForAsync(() => {
+      // Act
+      productService.getOne(productId).subscribe({
+        error: (err) => {
+          // Assert
+          expect(err).toEqual(new Error('El producto no existe'));
+        },
+      });
+
+      // HttpClientTestingModule will intercept the request and return the mockProducts
+      const request = httpController.expectOne(
+        `${apiUrl}/products/${productId}`
+      );
+
+      request.flush(null, { status: 404, statusText: 'Not Found' });
+      expect(request.request.method).toBe('GET');
+    }));
+
+    it('should throw an error if the user is not authorized', waitForAsync(() => {
+      // Act
+      productService.getOne(productId).subscribe({
+        error: (err) => {
+          // Assert
+          expect(err).toEqual(new Error('No tiene permitido el acceso'));
+        },
+      });
+
+      // HttpClientTestingModule will intercept the request and return the mockProducts
+      const request = httpController.expectOne(
+        `${apiUrl}/products/${productId}`
+      );
+
+      request.flush(null, { status: 401, statusText: 'Unauthorized' });
+      expect(request.request.method).toBe('GET');
+    }));
+
+    it('should throw an error if the server not respond', waitForAsync(() => {
+      // Act
+      productService.getOne(productId).subscribe({
+        error: (err) => {
+          // Assert
+          expect(err).toEqual(new Error('Algo esta fallando en el servidor.'));
+        },
+      });
+
+      // HttpClientTestingModule will intercept the request and return the mockProducts
+      const request = httpController.expectOne(
+        `${apiUrl}/products/${productId}`
+      );
+
+      request.flush(null, { status: 409 , statusText: 'Unknown Error' });
+      expect(request.request.method).toBe('GET');
+    }));
+
+    it('should throw an error if there is an unknown error', waitForAsync(() => {
+      // Act
+      productService.getOne(productId).subscribe({
+        error: (err) => {
+          // Assert
+          expect(err).toEqual(new Error('Ups algo salio mal'));
+        },
+      });
+
+      // HttpClientTestingModule will intercept the request and return the mockProducts
+      const request = httpController.expectOne(
+        `${apiUrl}/products/${productId}`
+      );
+
+      request.flush(null, { status: 500 , statusText: 'Unknown Error' });
+      expect(request.request.method).toBe('GET');
+    }));
+  })
 });
