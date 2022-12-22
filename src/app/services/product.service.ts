@@ -33,7 +33,7 @@ export class ProductService {
 
   getAll(limit?: number, offset?: number) {
     let params = new HttpParams();
-    if (limit && offset != null) {
+    if (limit && limit > 0 && !!offset && offset >= 0) {
       params = params.set('limit', limit);
       params = params.set('offset', offset);
     }
@@ -43,7 +43,7 @@ export class ProductService {
       map(products => products.map(item => {
         return {
           ...item,
-          taxes: .19 * item.price
+          taxes: (item.price > 0) ? (.19 * item.price) : 0
         }
       }))
     );
