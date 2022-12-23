@@ -118,7 +118,8 @@
               "progress": false,
               "browsers": "ChromeHeadlessCI",
               "watch": false,
-              "codeCoverage": true
+              "codeCoverage": true,
+              "sourceMap": false
             }
           },
           "defaultConfiguration": "development"

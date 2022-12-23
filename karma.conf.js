@@ -44,18 +44,19 @@ module.exports = function (config) {
     colors: true,
     logLevel: config.LOG_INFO,
     autoWatch: true,
-    browsers: ["ChromeHeadless", "ChromeHeadlessCI"],
+    browsers: ["HeadlessChrome", "ChromeHeadlessCI"],
     customLaunchers: {
       ChromeHeadlessCI: {
         base: "ChromeHeadless",
         flags: [
           "--no-sandbox",
+          "--headless",
           "--disable-gpu",
           "--enable-feature=NetworkService",
         ],
       },
     },
-    singleRun: true,
+    singleRun: false,
     restartOnFileChange: true,
   });
 };
