@@ -19,5 +19,7 @@ jobs:
           node-version: 14.x
       - name: Install dependencies (CI)
         run: npm ci
+      - name: Update Ubuntu libraries
+        run: sudo apt-get update && sudo apt-get install -y libgbm-dev
       - name: Run unit tests
         run: npm run test:ci
