@@ -20,4 +20,4 @@ jobs:
       - name: Install dependencies (CI)
         run: npm ci
       - name: Run unit tests
-        run: npm run test:ci
+        run: npm run test -- --code-coverage --no-progress --no-watch --browsers ChromeHeadlessCI
