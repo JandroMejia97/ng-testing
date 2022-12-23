@@ -119,7 +119,7 @@
               "browsers": "ChromeHeadlessCI",
               "watch": false,
               "codeCoverage": true,
-              "sourceMap": false
+              "sourceMap": true
             }
           },
           "defaultConfiguration": "development"

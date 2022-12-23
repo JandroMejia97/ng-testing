@@ -42,7 +42,7 @@ module.exports = function (config) {
     colors: true,
     logLevel: config.LOG_INFO,
     autoWatch: true,
-    browsers: ["ChromeHeadless"],
+    browsers: ["Chrome", "ChromeHeadless", "ChromeHeadlessCI"],
     customLaunchers: {
       ChromeHeadlessCI: {
         base: "ChromeHeadless",
@@ -51,10 +51,11 @@ module.exports = function (config) {
           "--headless",
           "--disable-gpu",
           "--enable-feature=NetworkService",
+          "--disable-setuid-sandbox"
         ],
       },
     },
-    singleRun: true,
+    singleRun: false,
     restartOnFileChange: true,
   });
 };
