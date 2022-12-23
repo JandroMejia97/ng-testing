@@ -40,4 +40,4 @@ jobs:
         run: npm ci
       - name: Run unit tests
         timeout-minutes: 5
-        run: npm test -- --configuration=ci
+        run: npm run test:ci
