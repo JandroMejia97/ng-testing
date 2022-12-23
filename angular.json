@@ -106,7 +106,22 @@
               "src/styles.scss"
             ],
             "scripts": []
-          }
+          },
+          "configurations": {
+            "development": {
+              "progress": true,
+              "browsers": "ChromeHeadless",
+              "watch": true,
+              "codeCoverage": true
+            },
+            "ci": {
+              "progress": false,
+              "browsers": "ChromeHeadlessCI",
+              "watch": false,
+              "codeCoverage": true
+            }
+          },
+          "defaultConfiguration": "development"
         }
       }
     }
