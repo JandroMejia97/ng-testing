@@ -33,4 +33,5 @@ jobs:
         if: steps.cache-node-modules.outputs.cache-hit != 'true'
         run: npm ci
       - name: Run unit tests
+        timeout-minutes: 2
         run: npm test -- --configuration=ci
