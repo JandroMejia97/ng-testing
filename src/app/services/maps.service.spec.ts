@@ -49,7 +49,7 @@ describe('MapsService', () => {
     });
 
     it('should handle errors', () => {
-      spyOn(console, 'log').and.callFake(() => {});
+      spyOn(console, 'log').and.callThrough();
       spyOn(navigator.geolocation, 'getCurrentPosition').and.callFake((_, error: PositionErrorCallback) => {
         expect(error).toBeDefined();
         error({ code: 0, message: 'Error', PERMISSION_DENIED: 0, POSITION_UNAVAILABLE: 0, TIMEOUT: 0 });
