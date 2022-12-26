@@ -35,6 +35,9 @@
       "@enums/*": [
         "src/app/enums/*"
       ],
+      "@components/*": [
+        "src/app/components/*"
+      ],
     }
   },
   "angularCompilerOptions": {
