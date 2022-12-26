@@ -32,6 +32,9 @@
       "@services/*": [
         "src/app/services/*"
       ],
+      "@enums/*": [
+        "src/app/enums/*"
+      ],
     }
   },
   "angularCompilerOptions": {
