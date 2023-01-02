@@ -7,8 +7,6 @@ import { Observable, of } from 'rxjs';
 export class ValueService {
   #myValue = 'Example';
 
-  constructor() { }
-
   get value(): string {
     return this.#myValue;
   }
