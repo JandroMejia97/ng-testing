@@ -1,6 +1,7 @@
 import { DebugElement } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
+import { Person } from '@models/person.model';
 
 import { PersonComponent } from './person.component';
 
@@ -22,23 +23,54 @@ describe('PersonComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should have a paragraph with the text "Hello, World!" (using the Native API)', () => {
-    const compiled = fixture.nativeElement;
-    const p: HTMLElement = compiled.querySelector('h3');
-    expect(p.textContent?.trim().toLocaleLowerCase()).toContain('hello, world!');
+  describe('Tests without input', () => {
+    it('should have a header with the text "Hello, World!" (using the Native API)', () => {
+      const compiled = fixture.nativeElement;
+      const p: HTMLElement = compiled.querySelector('h3');
+      expect(p.textContent?.toLocaleLowerCase()).toContain('hello, world!');
+    });
+
+    it('should have a header with the text "Hello, World!" (using the Debug API)', () => {
+      const debugElement: DebugElement = fixture.debugElement;
+      const compiled = debugElement.nativeElement;
+      const p: HTMLElement = compiled.querySelector('h3');
+      expect(p.textContent?.toLocaleLowerCase()).toContain('hello, world!');
+    });
+
+    it('should have a header with the text "Hello, World!" (using the Debug API and By.css)', () => {
+      const debugElement = fixture.debugElement;
+      const pDebugElement: DebugElement  = debugElement.query(By.css('h3'));
+      const pNativeElement: HTMLElement = pDebugElement.nativeElement;
+      expect(pNativeElement.textContent?.toLocaleLowerCase()).toContain('hello, world!');
+    });
   });
 
-  it('should have a paragraph with the text "Hello, World!" (using the Debug API)', () => {
-    const debugElement: DebugElement = fixture.debugElement;
-    const compiled = debugElement.nativeElement;
-    const p: HTMLElement = compiled.querySelector('h3');
-    expect(p.textContent?.trim().toLocaleLowerCase()).toContain('hello, world!');
-  });
+  describe('Tests with input', () => {
+    beforeEach(() => {
+      component.person = new Person(1, 'John', 'Doe', 30, 80, 1.80);
 
-  it('should have a paragraph with the text "Hello, World!" (using the Debug API and By.css)', () => {
-    const debugElement = fixture.debugElement;
-    const pDebugElement: DebugElement  = debugElement.query(By.css('h3'));
-    const pNativeElement: HTMLElement = pDebugElement.nativeElement;
-    expect(pNativeElement.textContent?.trim().toLocaleLowerCase()).toContain('hello, world!');
+      // Act
+      fixture.detectChanges();
+    });
+
+    it('should have a header with the text "Hello, {person.name}!"', () => {
+      // Arrange
+      const debugElement = fixture.debugElement;
+      const pDebugElement: DebugElement  = debugElement.query(By.css('h3'));
+      const pNativeElement: HTMLElement = pDebugElement.nativeElement;
+
+      // Assert
+      expect(pNativeElement.textContent).toContain(component.person.name);
+    });
+
+    it('should have a paragraph with the text "I\'m {person.age} years old"', () => {
+      // Arrange
+      const debugElement = fixture.debugElement;
+      const pDebugElement: DebugElement  = debugElement.query(By.css('p'));
+      const pNativeElement: HTMLElement = pDebugElement.nativeElement;
+
+      // Assert
+      expect(pNativeElement.textContent).toContain(component.person.age);
+    });
   });
 });

@@ -15,7 +15,7 @@ describe('Person', () => {
   const weight = faker.datatype.number({ min: 30, max: 250, precision: 0.01 });
 
   beforeEach(() => {
-    person = new Person(id, name, age, lastName, weight, height);
+    person = new Person(id, name, lastName, age, weight, height);
   });
 
   it('should create an instance', () => {

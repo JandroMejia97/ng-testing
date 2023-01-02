@@ -8,5 +8,5 @@ import { Person } from '@models/person.model';
   styleUrls: ['./person.component.scss']
 })
 export class PersonComponent {
-  @Input() person: Person | null = null;
+  @Input() person!: Person;
 }

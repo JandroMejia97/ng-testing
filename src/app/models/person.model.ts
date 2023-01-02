@@ -11,8 +11,8 @@ export class Person {
   constructor(
     id: number,
     name: string,
-    age: number,
     lastName: string,
+    age: number,
     weight: number,
     height: number
   ) {
