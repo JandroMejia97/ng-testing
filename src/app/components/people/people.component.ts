@@ -8,5 +8,10 @@ import { Person } from '@models/person.model';
   styleUrls: ['./people.component.scss']
 })
 export class PeopleComponent {
- people: Person[] = generateManyPeople(2);
+  people: Person[] = generateManyPeople(2);
+  selectedPerson: Person | null = null;
+
+  choosePerson(person: Person): void {
+    this.selectedPerson = person;
+  }
 }

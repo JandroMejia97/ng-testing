@@ -117,7 +117,7 @@ describe('PersonComponent', () => {
   template: `
     <app-person
       [person]="person"
-      (change)="onPersonSelected($event)">
+      (onSelect)="onPersonSelected($event)">
     </app-person>
   `,
 })

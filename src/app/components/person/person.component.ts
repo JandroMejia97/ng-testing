@@ -9,7 +9,7 @@ import { Person } from '@models/person.model';
 })
 export class PersonComponent {
   @Input() person!: Person;
-  @Output('change')
+  @Output('onSelect')
   onSelected = new EventEmitter<Person>();
   imc: number | null = null;
 
