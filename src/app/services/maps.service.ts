@@ -14,7 +14,7 @@ export class MapsService {
         const { latitude, longitude } = position.coords;
         this.center = { latitude, longitude };
       }, (error) => {
-        console.log(error);
+        // Do something with the error
       });
     }
   }

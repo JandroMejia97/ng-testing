@@ -11,16 +11,21 @@
 <blockquote *ngIf="imc">
   My IMC is {{ imc }} and I  have {{ person?.castIMCToString() ?? 'unknown' }}.
 </blockquote>
-
-<button
-  name="calculateIMC"
-  [disabled]="!!imc || !person"
-  (click)="calculateIMC()">
-  Calculate IMC
-</button>
-<button
-  name="selectPerson"
-  class="secondary"
-  (click)="onPersonSelected()">
-  Select Person
-</button>
+<div class="grid">
+  <div>
+    <button
+      name="calculateIMC"
+      [disabled]="!!imc || !person"
+      (click)="calculateIMC()">
+      Calculate IMC
+    </button>
+  </div>
+  <div>
+    <button
+      name="selectPerson"
+      class="secondary"
+      (click)="onPersonSelected()">
+      Select Person
+    </button>
+  </div>
+</div>

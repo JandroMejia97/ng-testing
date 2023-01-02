@@ -1,4 +1,4 @@
-import { DebugElement } from '@angular/core';
+import { Component, DebugElement } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { Person } from '@models/person.model';
@@ -111,4 +111,83 @@ describe('PersonComponent', () => {
       expect(selectedPerson).toEqual(component.person);
     });
   });
+});
+
+@Component({
+  template: `
+    <app-person
+      [person]="person"
+      (change)="onPersonSelected($event)">
+    </app-person>
+  `,
+})
+export class HostComponent {
+  person: Person = new Person(1, 'John', 'Doe', 30, 80, 1.80);
+  selectedPerson: Person | undefined;
+
+  onPersonSelected(person: Person): void {
+    this.selectedPerson = person;
+  }
+}
+
+describe('PersonComponent from HostComponent', () => {
+  let hostComponent: HostComponent;
+  let fixture: ComponentFixture<HostComponent>;
+
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      declarations: [HostComponent, PersonComponent],
+    }).compileComponents();
+
+    fixture = TestBed.createComponent(HostComponent);
+    hostComponent = fixture.componentInstance;
+    fixture.detectChanges();
+  });
+
+  it('should create a HostComponent', () => {
+    expect(hostComponent).toBeTruthy();
+  });
+
+  describe('Tests for the Child Component', () => {
+    let personDebugEle: DebugElement;
+
+    beforeEach(() => {
+      personDebugEle = fixture.debugElement.query(By.directive(PersonComponent));
+    });
+
+    it('should have a PersonComponent as child', () => {
+      expect(personDebugEle.componentInstance).toBeTruthy();
+    });
+
+    it('should have a PersonComponent with the same person as HostComponent', () => {
+      expect(personDebugEle.componentInstance.person).toEqual(hostComponent.person);
+    });
+
+    it('should have a H3 with the same name like the person in HostComponent', () => {
+      // Arrange
+      const h3: HTMLElement = personDebugEle.query(By.css('h3')).nativeElement;
+
+      // Act
+      fixture.detectChanges();
+
+      // Assert
+      expect(h3.textContent).toContain(hostComponent.person.name);
+    });
+
+    it('should emit an event when do click', () => {
+      // Arrange
+      const button: DebugElement = personDebugEle.query(By.css('button[name="selectPerson"]'));
+      const onChildEventSpy= spyOn(personDebugEle.componentInstance, 'onPersonSelected').and.callThrough();
+      const onEventHandlerSpy= spyOn(hostComponent, 'onPersonSelected').and.callThrough();
+
+      // Act
+      button.triggerEventHandler('click', null);
+
+      // Assert
+      expect(onChildEventSpy).toHaveBeenCalled();
+      expect(onEventHandlerSpy).toHaveBeenCalled();
+      expect(hostComponent.selectedPerson).toEqual(hostComponent.person);
+    });
+  });
+
 });
