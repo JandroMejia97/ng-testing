@@ -1,12 +1,19 @@
-<section>
-  <h3>
-    Hello, {{ person?.name ?? 'World' }}!
-  </h3>
-  <p>
-    I'm {{ person?.age ?? 'unknown' }} years old.
-  </p>
-  <p>
-    My height is {{ person?.height ?? 'unknown' }} and my weight is {{ person?.weight ?? 'unknown' }}.
-    I have {{ person?.castIMCToString() ?? 'unknown' }} IMC.
-  </p>
-</section>
+<h3>
+  Hello, {{ person?.name ?? 'World' }}!
+</h3>
+<p>
+  I'm {{ person?.age ?? 'unknown' }} years old.
+</p>
+<p>
+  My height is {{ person?.height ?? 'unknown' }} and my weight is {{ person?.weight ?? 'unknown' }}.
+</p>
+
+<blockquote *ngIf="imc">
+  My IMC is {{ imc }} and I  have {{ person?.castIMCToString() ?? 'unknown' }}.
+</blockquote>
+
+<button
+  [disabled]="!!imc || !person"
+  (click)="calculateIMC()">
+  Calculate IMC
+</button>

@@ -72,5 +72,24 @@ describe('PersonComponent', () => {
       // Assert
       expect(pNativeElement.textContent).toContain(component.person.age);
     });
+
+    it('should display a text with IMC when do click', () => {
+      // Arrange
+      const debugElement = fixture.debugElement;
+      const buttonDebugElement: DebugElement  = debugElement.query(By.css('button'));
+      const clickSpy = spyOn(component, 'calculateIMC').and.callThrough();
+
+      // Act
+      buttonDebugElement.triggerEventHandler('click', null);
+      fixture.detectChanges();
+
+      // Assert
+      const blockDebugElement: DebugElement  = debugElement.query(By.css('blockquote'));
+      const blockNativeElement: HTMLElement = blockDebugElement.nativeElement;
+
+      expect(clickSpy).toHaveBeenCalled();
+      expect(blockNativeElement.textContent).toContain(component.person.calculateIMC());
+      expect(blockNativeElement.textContent).toContain(component.person.castIMCToString());
+    });
   });
 });

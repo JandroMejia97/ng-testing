@@ -9,4 +9,9 @@ import { Person } from '@models/person.model';
 })
 export class PersonComponent {
   @Input() person!: Person;
+  imc: number | null = null;
+
+  calculateIMC(): void {
+    this.imc = this.person.calculateIMC();
+  }
 }
