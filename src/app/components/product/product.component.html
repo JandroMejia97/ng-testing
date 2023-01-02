@@ -1,0 +1,6 @@
+<figure *ngIf="product">
+  <img [src]="product.images[0]" [alt]="product.title">
+  <figcaption>
+    {{ product.title }} - {{ product.price | currency }}
+  </figcaption>
+</figure>
