@@ -13,7 +13,14 @@
 </blockquote>
 
 <button
+  name="calculateIMC"
   [disabled]="!!imc || !person"
   (click)="calculateIMC()">
   Calculate IMC
+</button>
+<button
+  name="selectPerson"
+  class="secondary"
+  (click)="onPersonSelected()">
+  Select Person
 </button>

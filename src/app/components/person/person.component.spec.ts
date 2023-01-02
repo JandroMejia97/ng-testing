@@ -76,8 +76,7 @@ describe('PersonComponent', () => {
     it('should display a text with IMC when do click', () => {
       // Arrange
       const debugElement = fixture.debugElement;
-      const buttonDebugElement: DebugElement  = debugElement.query(By.css('button'));
-      const clickSpy = spyOn(component, 'calculateIMC').and.callThrough();
+      const buttonDebugElement: DebugElement  = debugElement.query(By.css('button[name="calculateIMC"]'));      const clickSpy = spyOn(component, 'calculateIMC').and.callThrough();
 
       // Act
       buttonDebugElement.triggerEventHandler('click', null);
@@ -90,6 +89,26 @@ describe('PersonComponent', () => {
       expect(clickSpy).toHaveBeenCalled();
       expect(blockNativeElement.textContent).toContain(component.person.calculateIMC());
       expect(blockNativeElement.textContent).toContain(component.person.castIMCToString());
+    });
+
+    it('should emit an event when do click', () => {
+      // Arrange
+      const debugElement = fixture.debugElement;
+      const buttonDebugElement: DebugElement  = debugElement.query(By.css('button[name="selectPerson"]'));
+      const clickSpy = spyOn(component, 'onPersonSelected').and.callThrough();
+
+      let selectedPerson: Person | undefined;
+
+      // Act
+      component.onSelected.subscribe({
+        next: (person: Person) => selectedPerson = person
+      });
+      buttonDebugElement.triggerEventHandler('click', null);
+      fixture.detectChanges();
+
+      // Assert
+      expect(clickSpy).toHaveBeenCalled();
+      expect(selectedPerson).toEqual(component.person);
     });
   });
 });
