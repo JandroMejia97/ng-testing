@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { FormsModule } from '@angular/forms';
 import { By } from '@angular/platform-browser';
 import { HighlightDirective } from './highlight.directive';
 
@@ -14,9 +15,15 @@ import { HighlightDirective } from './highlight.directive';
     <p>
       Without highlight directive
     </p>
+    <input [(ngModel)]="color" type="text" id="input"/>
+    <p highlight [highlight]="color">
+      With highlight directive and a color defined in the input
+    </p>
   `,
 })
-export class HostComponent {}
+export class HostComponent {
+  color = 'pink';
+}
 
 describe('HighlightDirective', () => {
   let hostComponent: HostComponent;
@@ -26,6 +33,7 @@ describe('HighlightDirective', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       declarations: [HostComponent, HighlightDirective],
+      imports: [FormsModule],
     }).compileComponents();
 
     fixture = TestBed.createComponent(HostComponent);
@@ -46,8 +54,8 @@ describe('HighlightDirective', () => {
     const elements = fixture.debugElement.queryAll(By.directive(HighlightDirective));
     const elementsWithoutDirective = fixture.debugElement.queryAll(By.css(':not([highlight])'));
 
-    expect(elements.length).toBe(2);
-    expect(elementsWithoutDirective.length).toBe(1);
+    expect(elements.length).toBe(3);
+    expect(elementsWithoutDirective.length).toBe(2);
   });
 
   it('should have the default color when it isn\'t defined', () => {
@@ -61,5 +69,21 @@ describe('HighlightDirective', () => {
     const element = fixture.debugElement.queryAll(By.directive(HighlightDirective))[1];
 
     expect(element.nativeElement.style.backgroundColor).toBe('yellow');
+  });
+
+  it('should bind the color defined in the input and change it', () => {
+    const elementDebug = fixture.debugElement.queryAll(By.directive(HighlightDirective))[2];
+    const element: HTMLParagraphElement = elementDebug.nativeElement;
+    const inputDebug = fixture.debugElement.query(By.css('input'));
+    const inputElement: HTMLInputElement = inputDebug.nativeElement;
+
+    expect(elementDebug.nativeElement.style.backgroundColor).toBe('pink');
+
+    inputElement.value = 'blue';
+    inputElement.dispatchEvent(new Event('input'));
+    fixture.detectChanges();
+
+    expect(element.style.backgroundColor).toBe('blue');
+    expect(hostComponent.color).toBe('blue');
   });
 });
