@@ -4,6 +4,14 @@
   grid-template-rows: auto;
 }
 
+p.error {
+  color: var(--color);
+  background-color: var(--del-color);
+  border-color: var(--del-color);
+  border-radius: var(--border-radius);
+  padding: var(--form-element-spacing-vertical) var(--form-element-spacing-horizontal);
+}
+
 @media screen and (min-width: 768px) {
   .grid {
     grid-template-columns: repeat(2, 1fr);

@@ -9,6 +9,9 @@ import { ProductService } from 'src/app/services/product.service';
 })
 export class ProductsComponent implements OnInit {
   products: Product[] = [];
+  status: 'loading' | 'error' | 'success' = 'success';
+  private limit = 10;
+  private offset = 0;
 
   constructor(private productService: ProductService) {}
 
@@ -17,13 +20,16 @@ export class ProductsComponent implements OnInit {
   }
 
   getProducts(): void {
-    this.productService.getAll().subscribe({
+    this.status = 'loading';
+    this.productService.getAll(this.limit, this.offset).subscribe({
       next: (products) => {
-        this.products = products;
+        this.products = [...this.products, ...products];
+        this.offset += this.limit;
+        this.status = 'success';
       },
       error: (err) => {
-        console.log(err);
-      }
+        this.status = 'error';
+      },
     });
   }
 }

@@ -1,9 +1,30 @@
 <main class="container">
   <section>
     <h1>Products Component</h1>
+    <p
+      class="error"
+      *ngIf="status === 'error'">
+      Something went wrong. Please try again.
+    </p>
     <div class="grid">
-      <app-product *ngFor="let product of products">
+      <app-product
+        [product]="product"
+        *ngFor="let product of products">
       </app-product>
     </div>
+    <button
+      [ngClass]="status"
+      (click)="getProducts()"
+      [disabled]="status === 'loading'"
+      [attr.aria-busy]="status === 'loading'">
+      <span>
+        <ng-container *ngIf="status === 'loading'; else notLoading">
+          Loading...
+        </ng-container>
+        <ng-template #notLoading>
+          Load More
+        </ng-template>
+      </span>
+    </button>
   </section>
 </main>
