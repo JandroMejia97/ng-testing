@@ -4,7 +4,7 @@ import { Directive, ElementRef, Input, OnChanges, SimpleChanges } from '@angular
   selector: '[highlight]'
 })
 export class HighlightDirective implements OnChanges {
-  private readonly defaultColor = 'red';
+  readonly defaultColor = 'red';
 
   @Input() highlight!: string;
 
