@@ -14,6 +14,7 @@ import { ValueService } from '@services/value.service';
 import { ProductService } from '@services/product.service';
 
 import { ProductsComponent } from './products.component';
+import { By } from '@angular/platform-browser';
 
 describe('ProductsComponent', () => {
   let component: ProductsComponent;
@@ -102,13 +103,17 @@ describe('ProductsComponent', () => {
     it('should set products property with an empty array when the getAll method from ProductService return an error', () => {
       // Arrange
       const errorMock = new HttpErrorResponse({ status: 404 });
+      spyOn(component, 'getProducts').and.callThrough();
       productServiceSpy.getAll.and.returnValue(throwError(() => errorMock));
       component.products = [];
+      const debugButton = fixture.debugElement.query(By.css('button[name="loadMore"]'));
 
       // Act
-      component.getProducts();
+      debugButton.triggerEventHandler('click', null);
+      fixture.detectChanges();
 
       // Assert
+      expect(component.getProducts).toHaveBeenCalledTimes(1);
       expect(component.products).toEqual([]);
     });
 
@@ -118,15 +123,18 @@ describe('ProductsComponent', () => {
       productServiceSpy.getAll.and.returnValue(
         defer(() => Promise.resolve(productsMock))
       );
+      spyOn(component, 'getProducts').and.callThrough();
+      const debugButton = fixture.debugElement.query(By.css('button[name="loadMore"]'));
 
       // Act
-      component.getProducts();
+      debugButton.triggerEventHandler('click', null);
       fixture.detectChanges();
       expect(component.status).toEqual('loading');
 
       tick();
       fixture.detectChanges();
       // Assert
+      expect(component.getProducts).toHaveBeenCalledTimes(1);
       expect(component.status).toEqual('success');
     }));
 
@@ -136,15 +144,18 @@ describe('ProductsComponent', () => {
       productServiceSpy.getAll.and.returnValue(
         defer(() => Promise.reject(errorMock))
       );
+      spyOn(component, 'getProducts').and.callThrough();
+      const debugButton = fixture.debugElement.query(By.css('button[name="loadMore"]'));
 
       // Act
-      component.getProducts();
+      debugButton.triggerEventHandler('click', null);
       fixture.detectChanges();
       expect(component.status).toEqual('loading');
 
       tick();
       fixture.detectChanges();
       // Assert
+      expect(component.getProducts).toHaveBeenCalledTimes(1);
       expect(component.status).toEqual('error');
     }));
   });
@@ -158,5 +169,23 @@ describe('ProductsComponent', () => {
       // Assert
       expect(component.response).toEqual('Example');
     });
+
+    it('should show "Example" when user click a button to call a Promise', fakeAsync(() => {
+      // Arrange
+      spyOn(component, 'callPromise').and.callThrough();
+      const debugButton = fixture.debugElement.query(By.css('button[name="callPromise"]'));
+
+      // Act
+      debugButton.triggerEventHandler('click', null);
+      fixture.detectChanges();
+      tick();
+      fixture.detectChanges();
+      const responseParagraph = fixture.debugElement.query(By.css('p.response'));
+
+      // Assert
+      expect(component.callPromise).toHaveBeenCalled();
+      expect(component.response).toEqual('Example');
+      expect(responseParagraph.nativeElement.textContent).toContain('Example');
+    }))
   });
 });

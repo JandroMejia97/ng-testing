@@ -13,6 +13,7 @@
       </app-product>
     </div>
     <button
+      name="loadMore"
       [ngClass]="status"
       (click)="getProducts()"
       [disabled]="status === 'loading'"
@@ -26,5 +27,13 @@
         </ng-template>
       </span>
     </button>
+    <button
+      name="callPromise"
+      (click)="callPromise()">
+      Call Promise
+    </button>
+    <p class="response" *ngIf="response.length > 0">
+      {{ response }}
+    </p>
   </section>
 </main>
