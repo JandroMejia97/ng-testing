@@ -1,0 +1,22 @@
+<section class="container">
+  <h3>
+    Directive
+  </h3>
+  <p highlight>
+    Lorem ipsum dolor sit amet consectetur adipisicing elit.
+  </p>
+  <p highlight="yellow">
+    Lorem ipsum dolor sit amet consectetur adipisicing elit.
+  </p>
+  <p highlight="green">
+    Lorem ipsum dolor sit amet consectetur adipisicing elit.
+  </p>
+  <p>
+    <label for="input">
+      <input [(ngModel)]="color" type="text" id="input"/>
+    </label>
+  </p>
+  <p [highlight]="color">
+    Lorem ipsum dolor sit amet consectetur adipisicing elit.
+  </p>
+</section>
