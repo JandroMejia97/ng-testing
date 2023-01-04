@@ -40,4 +40,4 @@ jobs:
         run: npm ci
       - name: 🧪 Trying to run tests
         timeout-minutes: 3
-        run: npm run test -- --configuration=ci & (sleep 2m && npmPID=$(pgrep npm) && echo "Killing NPM Test with ID $npmID" && kill $npmPID)
+        run: npm run test -- --configuration ci & sleep 1m && kill -9 $! 2>/dev/null
