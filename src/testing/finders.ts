@@ -14,7 +14,7 @@ export function queryByTestId<T>(
   testId: string
 ): DebugElement {
   const selector = `[data-testid="${testId}"]`;
-  return fixture.debugElement.query(By.css(selector));
+  return query(fixture, selector);
 }
 
 /**
@@ -28,7 +28,11 @@ export function query<T>(
   fixture: ComponentFixture<T>,
   selector: string
 ): DebugElement {
-  return fixture.debugElement.query(By.css(selector));
+  const debugElement = fixture.debugElement.query(By.css(selector));
+  if (!debugElement) {
+    throw new Error(`Could not find element with selector: ${selector}`);
+  }
+  return debugElement;
 }
 
 /**
@@ -56,7 +60,11 @@ export function queryByDirective<T, U>(
   fixture: ComponentFixture<T>,
   directive: Type<U>
 ): DebugElement {
-  return fixture.debugElement.query(By.directive(directive));
+  const debugElement = fixture.debugElement.query(By.directive(directive));
+  if (!debugElement) {
+    throw new Error(`Could not find element with directive: ${directive.name}`);
+  }
+  return debugElement;
 }
 
 /**

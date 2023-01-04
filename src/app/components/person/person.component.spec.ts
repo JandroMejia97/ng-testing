@@ -2,6 +2,7 @@ import { Component, DebugElement } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { Person } from '@models/person.model';
+import { getTextContentBySelector, query, queryByDirective } from '@testing';
 
 import { PersonComponent } from './person.component';
 
@@ -38,16 +39,14 @@ describe('PersonComponent', () => {
     });
 
     it('should have a header with the text "Hello, World!" (using the Debug API and By.css)', () => {
-      const debugElement = fixture.debugElement;
-      const pDebugElement: DebugElement  = debugElement.query(By.css('h3'));
-      const pNativeElement: HTMLElement = pDebugElement.nativeElement;
-      expect(pNativeElement.textContent?.toLocaleLowerCase()).toContain('hello, world!');
+      const h3TextContent = getTextContentBySelector(fixture, 'h3');
+      expect(h3TextContent?.toLocaleLowerCase()).toContain('hello, world!');
     });
   });
 
   describe('Tests with input', () => {
     beforeEach(() => {
-      component.person = new Person(1, 'John', 'Doe', 30, 80, 1.80);
+      component.person = new Person(1, 'John', 'Doe', 30, 80, 1.8);
 
       // Act
       fixture.detectChanges();
@@ -55,53 +54,55 @@ describe('PersonComponent', () => {
 
     it('should have a header with the text "Hello, {person.name}!"', () => {
       // Arrange
-      const debugElement = fixture.debugElement;
-      const pDebugElement: DebugElement  = debugElement.query(By.css('h3'));
-      const pNativeElement: HTMLElement = pDebugElement.nativeElement;
+      const h3TextContent = getTextContentBySelector(fixture, 'h3');
 
       // Assert
-      expect(pNativeElement.textContent).toContain(component.person.name);
+      expect(h3TextContent).toContain(component.person.name);
     });
 
     it('should have a paragraph with the text "I\'m {person.age} years old"', () => {
       // Arrange
-      const debugElement = fixture.debugElement;
-      const pDebugElement: DebugElement  = debugElement.query(By.css('p'));
-      const pNativeElement: HTMLElement = pDebugElement.nativeElement;
+      const pTextContent = getTextContentBySelector(fixture, 'p');
 
       // Assert
-      expect(pNativeElement.textContent).toContain(component.person.age);
+      expect(pTextContent).toContain(component.person.age.toString());
     });
 
     it('should display a text with IMC when do click', () => {
       // Arrange
-      const debugElement = fixture.debugElement;
-      const buttonDebugElement: DebugElement  = debugElement.query(By.css('button[name="calculateIMC"]'));      const clickSpy = spyOn(component, 'calculateIMC').and.callThrough();
+      const buttonDebugElement: DebugElement = query(
+        fixture,
+        'button[name="calculateIMC"]'
+      );
+      const clickSpy = spyOn(component, 'calculateIMC').and.callThrough();
 
       // Act
       buttonDebugElement.triggerEventHandler('click', null);
       fixture.detectChanges();
 
       // Assert
-      const blockDebugElement: DebugElement  = debugElement.query(By.css('blockquote'));
-      const blockNativeElement: HTMLElement = blockDebugElement.nativeElement;
+      const blockTextContent = getTextContentBySelector(fixture, 'blockquote');
 
       expect(clickSpy).toHaveBeenCalled();
-      expect(blockNativeElement.textContent).toContain(component.person.calculateIMC());
-      expect(blockNativeElement.textContent).toContain(component.person.castIMCToString());
+      expect(blockTextContent).toContain(
+        component.person.calculateIMC().toString()
+      );
+      expect(blockTextContent).toContain(component.person.castIMCToString());
     });
 
     it('should emit an event when do click', () => {
       // Arrange
-      const debugElement = fixture.debugElement;
-      const buttonDebugElement: DebugElement  = debugElement.query(By.css('button[name="selectPerson"]'));
+      const buttonDebugElement: DebugElement = query(
+        fixture,
+        'button[name="selectPerson"]'
+      );
       const clickSpy = spyOn(component, 'onPersonSelected').and.callThrough();
 
       let selectedPerson: Person | undefined;
 
       // Act
       component.onSelected.subscribe({
-        next: (person: Person) => selectedPerson = person
+        next: (person: Person) => (selectedPerson = person),
       });
       buttonDebugElement.triggerEventHandler('click', null);
       fixture.detectChanges();
@@ -122,7 +123,7 @@ describe('PersonComponent', () => {
   `,
 })
 export class HostComponent {
-  person: Person = new Person(1, 'John', 'Doe', 30, 80, 1.80);
+  person: Person = new Person(1, 'John', 'Doe', 30, 80, 1.8);
   selectedPerson: Person | undefined;
 
   onPersonSelected(person: Person): void {
@@ -152,7 +153,7 @@ describe('PersonComponent from HostComponent', () => {
     let personDebugEle: DebugElement;
 
     beforeEach(() => {
-      personDebugEle = fixture.debugElement.query(By.directive(PersonComponent));
+      personDebugEle = queryByDirective(fixture, PersonComponent);
     });
 
     it('should have a PersonComponent as child', () => {
@@ -160,25 +161,35 @@ describe('PersonComponent from HostComponent', () => {
     });
 
     it('should have a PersonComponent with the same person as HostComponent', () => {
-      expect(personDebugEle.componentInstance.person).toEqual(hostComponent.person);
+      expect(personDebugEle.componentInstance.person).toEqual(
+        hostComponent.person
+      );
     });
 
     it('should have a H3 with the same name like the person in HostComponent', () => {
-      // Arrange
-      const h3: HTMLElement = personDebugEle.query(By.css('h3')).nativeElement;
-
       // Act
       fixture.detectChanges();
+      const h3TextContent = getTextContentBySelector(fixture, 'h3');
 
       // Assert
-      expect(h3.textContent).toContain(hostComponent.person.name);
+      expect(h3TextContent).toContain(hostComponent.person.name);
     });
 
     it('should emit an event when do click', () => {
       // Arrange
-      const button: DebugElement = personDebugEle.query(By.css('button[name="selectPerson"]'));
-      const onChildEventSpy= spyOn(personDebugEle.componentInstance, 'onPersonSelected').and.callThrough();
-      const onEventHandlerSpy= spyOn(hostComponent, 'onPersonSelected').and.callThrough();
+      const button: DebugElement = query(
+        fixture,
+        'button[name="selectPerson"]'
+      );
+
+      const onChildEventSpy = spyOn(
+        personDebugEle.componentInstance,
+        'onPersonSelected'
+      ).and.callThrough();
+      const onEventHandlerSpy = spyOn(
+        hostComponent,
+        'onPersonSelected'
+      ).and.callThrough();
 
       // Act
       button.triggerEventHandler('click', null);
@@ -189,5 +200,4 @@ describe('PersonComponent from HostComponent', () => {
       expect(hostComponent.selectedPerson).toEqual(hostComponent.person);
     });
   });
-
 });
