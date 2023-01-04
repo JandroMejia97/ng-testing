@@ -1,4 +1,4 @@
-import { DebugElement } from '@angular/core';
+import { DebugElement, Type } from '@angular/core';
 import { ComponentFixture } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 
@@ -9,7 +9,10 @@ import { By } from '@angular/platform-browser';
  * @param testId The Test ID of the element to query
  * @returns The element with the given Test ID
  */
-export function queryByTestId<T>(fixture: ComponentFixture<T>, testId: string): DebugElement {
+export function queryByTestId<T>(
+  fixture: ComponentFixture<T>,
+  testId: string
+): DebugElement {
   const selector = `[data-testid="${testId}"]`;
   return fixture.debugElement.query(By.css(selector));
 }
@@ -21,7 +24,10 @@ export function queryByTestId<T>(fixture: ComponentFixture<T>, testId: string): 
  * @param selector The CSS selector of the element to query
  * @returns The element with the given CSS selector
  */
-export function query<T>(fixture: ComponentFixture<T>, selector: string): DebugElement {
+export function query<T>(
+  fixture: ComponentFixture<T>,
+  selector: string
+): DebugElement {
   return fixture.debugElement.query(By.css(selector));
 }
 
@@ -32,7 +38,10 @@ export function query<T>(fixture: ComponentFixture<T>, selector: string): DebugE
  * @param selector The CSS selector of the element to query
  * @returns
  */
-export function queryAll<T>(fixture: ComponentFixture<T>, selector: string): DebugElement[] {
+export function queryAll<T>(
+  fixture: ComponentFixture<T>,
+  selector: string
+): DebugElement[] {
   return fixture.debugElement.queryAll(By.css(selector));
 }
 
@@ -45,7 +54,7 @@ export function queryAll<T>(fixture: ComponentFixture<T>, selector: string): Deb
  */
 export function queryByDirective<T, U>(
   fixture: ComponentFixture<T>,
-  directive: new (...args: unknown[]) => U
+  directive: Type<U>
 ): DebugElement {
   return fixture.debugElement.query(By.directive(directive));
 }
@@ -59,7 +68,7 @@ export function queryByDirective<T, U>(
  */
 export function queryAllByDirective<T, U>(
   fixture: ComponentFixture<T>,
-  directive: new (...args: unknown[]) => U
+  directive: Type<U>
 ): DebugElement[] {
   return fixture.debugElement.queryAll(By.directive(directive));
 }
