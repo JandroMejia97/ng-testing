@@ -72,3 +72,17 @@ export function queryAllByDirective<T, U>(
 ): DebugElement[] {
   return fixture.debugElement.queryAll(By.directive(directive));
 }
+
+/**
+ * Get the text content of an element with the given selector
+ *
+ * @param fixture The fixture of the component to query
+ * @param selector The CSS selector of the element to query
+ * @returns The text content of the element with the given CSS selector
+ */
+export function getTextContentBySelector<T>(
+  fixture: ComponentFixture<T>,
+  selector: string
+): string {
+  return query(fixture, selector).nativeElement.textContent;
+}

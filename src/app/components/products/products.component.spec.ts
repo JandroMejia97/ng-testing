@@ -14,6 +14,7 @@ import { ProductService } from '@services/product.service';
 import {
   asyncData,
   asyncError,
+  getTextContentBySelector,
   observableData,
   observableError,
   query
@@ -179,12 +180,12 @@ describe('ProductsComponent', () => {
       fixture.detectChanges();
       tick();
       fixture.detectChanges();
-      const responseParagraph = query(fixture, 'p.response');
+      const responseParagraph = getTextContentBySelector(fixture, 'p.response');
 
       // Assert
       expect(component.callPromise).toHaveBeenCalled();
       expect(component.response).toEqual('Example');
-      expect(responseParagraph.nativeElement.textContent).toContain('Example');
+      expect(responseParagraph).toContain('Example');
     }));
   });
 });
