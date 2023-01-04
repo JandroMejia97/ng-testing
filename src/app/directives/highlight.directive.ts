@@ -1,24 +1,23 @@
-import { Directive, ElementRef, Input, OnChanges, SimpleChanges } from '@angular/core';
+import { Directive, ElementRef, Input } from '@angular/core';
 
 @Directive({
   selector: '[highlight]'
 })
-export class HighlightDirective implements OnChanges {
+export class HighlightDirective {
   readonly defaultColor = 'red';
 
-  @Input() highlight!: string;
+  @Input()
+  set highlight(color: string) {
+    if (color.length == 0) {
+      color = this.defaultColor;
+    }
+    this.elementRef.nativeElement.style.backgroundColor = color;
+  }
 
   constructor(
     private elementRef: ElementRef,
   ) {
     this.elementRef.nativeElement.style.backgroundColor = this.defaultColor;
   }
-  ngOnChanges(changes: SimpleChanges): void {
-    if (changes['highlight'] && this.highlight.length > 0) {
-      this.elementRef.nativeElement.style.backgroundColor = this.highlight ?? this.defaultColor;
-    }
-  }
-
-
 
 }

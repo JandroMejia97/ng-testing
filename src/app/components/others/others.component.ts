@@ -6,5 +6,5 @@ import { Component } from '@angular/core';
   styleUrls: ['./others.component.scss']
 })
 export class OthersComponent {
-  color = 'pink';
+  color = 'blue';
 }
