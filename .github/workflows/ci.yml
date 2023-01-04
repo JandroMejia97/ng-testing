@@ -39,5 +39,5 @@ jobs:
         if: steps.cache-node.outputs.cache-hit != 'true'
         run: npm ci
       - name: 🧪 Trying to run tests
-        timeout-minutes: 4
-        run: npm run test -- --configuration=ci & (sleep 3m && (npmPID=$(ps aux | grep npm | awk '{print $2}')) && echo "Killing NPM Test with ID $npmID" && kill $npmPID)
+        timeout-minutes: 3
+        run: npm run test -- --configuration=ci & (sleep 2m && npmPID=$(pgrep npm) && echo "Killing NPM Test with ID $npmID" && kill $npmPID)
