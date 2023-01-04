@@ -38,6 +38,21 @@ jobs:
         # Only run `npm ci` if the cache was not hit
         if: steps.cache-node.outputs.cache-hit != 'true'
         run: npm ci
-      - name: 🧪 Trying to run tests
+      - name: 🧪 Trying to run tests & kill process after 2 minutes
         timeout-minutes: 3
-        run: npm run test -- --configuration ci & sleep 1m && kill -9 $! 2>/dev/null
+        run: npm run test -- --configuration ci >> test-results.log & sleep 2m && kill $!
+        # Show the test results in the console
+      - name: 📊 Show test results
+        run: cat test-results.log
+        # Check if the test results contain any failures
+      - name: 🚨 Check test results
+        run: |
+          if grep -q "failed" test-results.log; then
+            RED='\033[0;31m'
+            echo "${RED}TESTS FAILED"
+            exit 1
+          else
+            GREEN='\033[0;32m'
+            echo "${GREEN}TESTS PASSED"
+            exit 0
+          fi

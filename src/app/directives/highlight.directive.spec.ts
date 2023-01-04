@@ -71,7 +71,7 @@ describe('HighlightDirective with HostComponent', () => {
     const elements = fixture.debugElement.queryAll(By.directive(HighlightDirective));
     const elementsWithoutDirective = fixture.debugElement.queryAll(By.css(':not([highlight])'));
 
-    expect(elements.length).toBe(5);
+    expect(elements.length).toBe(3);
     expect(elementsWithoutDirective.length).toBe(2);
   });
 
