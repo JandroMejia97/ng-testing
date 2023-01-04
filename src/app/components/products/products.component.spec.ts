@@ -5,22 +5,26 @@ import {
   TestBed,
   tick,
 } from '@angular/core/testing';
-import { defer, of, throwError } from 'rxjs';
+import { By } from '@angular/platform-browser';
 
 import { ProductComponent } from '@components/product/product.component';
 import { generateManyProducts } from '@models/mocks/product.mock';
 import { Product } from '@models/product.model';
 import { ValueService } from '@services/value.service';
 import { ProductService } from '@services/product.service';
+import {
+  asyncData,
+  asyncError,
+  observableData,
+  observableError,
+} from '@testing/async-data';
 
 import { ProductsComponent } from './products.component';
-import { By } from '@angular/platform-browser';
 
 describe('ProductsComponent', () => {
   let component: ProductsComponent;
   let fixture: ComponentFixture<ProductsComponent>;
   let productServiceSpy: jasmine.SpyObj<ProductService>;
-  let valueService: jasmine.SpyObj<ValueService>;
 
   beforeEach(async () => {
     const productServiceSpy = jasmine.createSpyObj<ProductService>(
@@ -59,9 +63,8 @@ describe('ProductsComponent', () => {
     productServiceSpy = TestBed.inject(
       ProductService
     ) as jasmine.SpyObj<ProductService>;
-    valueService = TestBed.inject(ValueService) as jasmine.SpyObj<ValueService>;
     const productsMock = generateManyProducts(5);
-    productServiceSpy.getAll.and.returnValue(of(productsMock));
+    productServiceSpy.getAll.and.returnValue(observableData(productsMock));
 
     fixture.detectChanges(); // ngOnInit
   });
@@ -75,7 +78,7 @@ describe('ProductsComponent', () => {
     it('should call getAll method from ProductService', () => {
       // Arrange
       const productsMock = generateManyProducts(5);
-      productServiceSpy.getAll.and.returnValue(of(productsMock));
+      productServiceSpy.getAll.and.returnValue(observableData(productsMock));
 
       // Act
       component.getProducts();
@@ -89,7 +92,7 @@ describe('ProductsComponent', () => {
     it('should set products property with an empty array when the getAll method from ProductService return an empty array', () => {
       // Arrange
       const productsMock: Product[] = [];
-      productServiceSpy.getAll.and.returnValue(of(productsMock));
+      productServiceSpy.getAll.and.returnValue(observableData(productsMock));
       component.products = [];
 
       // Act
@@ -104,9 +107,11 @@ describe('ProductsComponent', () => {
       // Arrange
       const errorMock = new HttpErrorResponse({ status: 404 });
       spyOn(component, 'getProducts').and.callThrough();
-      productServiceSpy.getAll.and.returnValue(throwError(() => errorMock));
+      productServiceSpy.getAll.and.returnValue(observableError(errorMock));
       component.products = [];
-      const debugButton = fixture.debugElement.query(By.css('button[name="loadMore"]'));
+      const debugButton = fixture.debugElement.query(
+        By.css('button[name="loadMore"]')
+      );
 
       // Act
       debugButton.triggerEventHandler('click', null);
@@ -120,11 +125,11 @@ describe('ProductsComponent', () => {
     it('should change the status property from "loading" to "success" when the getAll method from ProductService return an array of products', fakeAsync(() => {
       // Arrange
       const productsMock = generateManyProducts(5);
-      productServiceSpy.getAll.and.returnValue(
-        defer(() => Promise.resolve(productsMock))
-      );
+      productServiceSpy.getAll.and.returnValue(asyncData(productsMock));
       spyOn(component, 'getProducts').and.callThrough();
-      const debugButton = fixture.debugElement.query(By.css('button[name="loadMore"]'));
+      const debugButton = fixture.debugElement.query(
+        By.css('button[name="loadMore"]')
+      );
 
       // Act
       debugButton.triggerEventHandler('click', null);
@@ -141,11 +146,11 @@ describe('ProductsComponent', () => {
     it('should change the status property from "loading" to "error" when the getAll method from ProductService return an error', fakeAsync(() => {
       // Arrange
       const errorMock = new HttpErrorResponse({ status: 404 });
-      productServiceSpy.getAll.and.returnValue(
-        defer(() => Promise.reject(errorMock))
-      );
+      productServiceSpy.getAll.and.returnValue(asyncError(errorMock));
       spyOn(component, 'getProducts').and.callThrough();
-      const debugButton = fixture.debugElement.query(By.css('button[name="loadMore"]'));
+      const debugButton = fixture.debugElement.query(
+        By.css('button[name="loadMore"]')
+      );
 
       // Act
       debugButton.triggerEventHandler('click', null);
@@ -173,19 +178,23 @@ describe('ProductsComponent', () => {
     it('should show "Example" when user click a button to call a Promise', fakeAsync(() => {
       // Arrange
       spyOn(component, 'callPromise').and.callThrough();
-      const debugButton = fixture.debugElement.query(By.css('button[name="callPromise"]'));
+      const debugButton = fixture.debugElement.query(
+        By.css('button[name="callPromise"]')
+      );
 
       // Act
       debugButton.triggerEventHandler('click', null);
       fixture.detectChanges();
       tick();
       fixture.detectChanges();
-      const responseParagraph = fixture.debugElement.query(By.css('p.response'));
+      const responseParagraph = fixture.debugElement.query(
+        By.css('p.response')
+      );
 
       // Assert
       expect(component.callPromise).toHaveBeenCalled();
       expect(component.response).toEqual('Example');
       expect(responseParagraph.nativeElement.textContent).toContain('Example');
-    }))
+    }));
   });
 });
