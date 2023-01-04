@@ -26,8 +26,8 @@
       "@environments/*": [
         "src/environments/*"
       ],
-      "@testing/*": [
-        "src/testing/*"
+      "@testing": [
+        "src/testing"
       ],
       "@models/*": [
         "src/app/models/*"

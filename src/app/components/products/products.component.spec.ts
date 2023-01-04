@@ -5,7 +5,6 @@ import {
   TestBed,
   tick,
 } from '@angular/core/testing';
-import { By } from '@angular/platform-browser';
 
 import { ProductComponent } from '@components/product/product.component';
 import { generateManyProducts } from '@models/mocks/product.mock';
@@ -17,7 +16,8 @@ import {
   asyncError,
   observableData,
   observableError,
-} from '@testing/async-data';
+  query
+} from '@testing';
 
 import { ProductsComponent } from './products.component';
 
@@ -109,9 +109,7 @@ describe('ProductsComponent', () => {
       spyOn(component, 'getProducts').and.callThrough();
       productServiceSpy.getAll.and.returnValue(observableError(errorMock));
       component.products = [];
-      const debugButton = fixture.debugElement.query(
-        By.css('button[name="loadMore"]')
-      );
+      const debugButton = query(fixture, 'button[name="loadMore"]');
 
       // Act
       debugButton.triggerEventHandler('click', null);
@@ -127,9 +125,7 @@ describe('ProductsComponent', () => {
       const productsMock = generateManyProducts(5);
       productServiceSpy.getAll.and.returnValue(asyncData(productsMock));
       spyOn(component, 'getProducts').and.callThrough();
-      const debugButton = fixture.debugElement.query(
-        By.css('button[name="loadMore"]')
-      );
+      const debugButton = query(fixture, 'button[name="loadMore"]');
 
       // Act
       debugButton.triggerEventHandler('click', null);
@@ -148,9 +144,7 @@ describe('ProductsComponent', () => {
       const errorMock = new HttpErrorResponse({ status: 404 });
       productServiceSpy.getAll.and.returnValue(asyncError(errorMock));
       spyOn(component, 'getProducts').and.callThrough();
-      const debugButton = fixture.debugElement.query(
-        By.css('button[name="loadMore"]')
-      );
+      const debugButton = query(fixture, 'button[name="loadMore"]');
 
       // Act
       debugButton.triggerEventHandler('click', null);
@@ -178,18 +172,14 @@ describe('ProductsComponent', () => {
     it('should show "Example" when user click a button to call a Promise', fakeAsync(() => {
       // Arrange
       spyOn(component, 'callPromise').and.callThrough();
-      const debugButton = fixture.debugElement.query(
-        By.css('button[name="callPromise"]')
-      );
+      const debugButton = query(fixture, 'button[name="callPromise"]');
 
       // Act
       debugButton.triggerEventHandler('click', null);
       fixture.detectChanges();
       tick();
       fixture.detectChanges();
-      const responseParagraph = fixture.debugElement.query(
-        By.css('p.response')
-      );
+      const responseParagraph = query(fixture, 'p.response');
 
       // Assert
       expect(component.callPromise).toHaveBeenCalled();
