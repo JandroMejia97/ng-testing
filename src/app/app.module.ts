@@ -13,6 +13,7 @@ import { PeopleComponent } from './components/people/people.component';
 import { ProductComponent } from './components/product/product.component';
 import { HighlightDirective } from './directives/highlight.directive';
 import { OthersComponent } from './components/others/others.component';
+import { ReversePipe } from './pipes/reverse.pipe';
 
 @NgModule({
   declarations: [
@@ -24,6 +25,7 @@ import { OthersComponent } from './components/others/others.component';
     ProductComponent,
     HighlightDirective,
     OthersComponent,
+    ReversePipe,
   ],
   imports: [
     BrowserModule,

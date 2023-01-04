@@ -19,4 +19,18 @@
   <p [highlight]="color">
     Lorem ipsum dolor sit amet consectetur adipisicing elit.
   </p>
+  <h3>
+    Pipe
+  </h3>
+  <p>
+    {{ 'Hello World' | reverse }}
+  </p>
+  <p>
+    <label for="reverse">
+      <input [(ngModel)]="reverseText" type="text" id="reverse"/>
+    </label>
+  </p>
+  <p>
+    {{ reverseText | reverse }}
+  </p>
 </section>
