@@ -47,12 +47,17 @@ jobs:
         # Check if the test results contain any failures
       - name: 🚨 Check test results
         run: |
+          CLEAR='\033[0m'
           if grep -q "failed" test-results.log; then
             RED='\033[0;31m'
-            echo "${RED}TESTS FAILED"
+            echo -e "${RED}*************************************${CLEAR}"
+            echo -e "${RED}TESTS FAILED${CLEAR}"
+            echo -e "${RED}*************************************${CLEAR}"
             exit 1
           else
             GREEN='\033[0;32m'
-            echo "${GREEN}TESTS PASSED"
+            echo -e "${GREEN}*************************************${CLEAR}"
+            echo -e "${GREEN}TESTS PASSED${CLEAR}"
+            echo -e "${GREEN}*************************************${CLEAR}"
             exit 0
           fi
