@@ -37,7 +37,7 @@ jobs:
       - name: ⚒️ Install dependencies (CI)
         # Only run `npm ci` if the cache was not hit
         if: steps.cache-node.outputs.cache-hit != 'true'
-        run: npm ci
+        run: npm ci & (sleep 5m && (ps aux | grep npm | awk '{print $2}' | xargs sudo kill -9))
       - name: 🧪 Trying to run tests
         timeout-minutes: 4
         run: npm run test -- --configuration=ci
