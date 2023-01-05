@@ -60,7 +60,6 @@ export class RegisterComponent implements OnInit, OnDestroy {
             CustomValidators.atLeastOneLowercase,
             CustomValidators.atLeastOneUppercase,
             CustomValidators.atLeastOneNumber,
-            CustomValidators.atLeastOneSpecialCharacter,
           ],
         ],
         confirmPassword: [null, [Validators.required]],
@@ -76,14 +75,20 @@ export class RegisterComponent implements OnInit, OnDestroy {
     event.preventDefault();
     if (this.formGroup.valid) {
       const value = this.formGroup.value;
-      this.userService.create(value)
-      .subscribe((rta) => {
-        console.log(rta);
-        // redirect
-      });
+      this.userService
+        .create({
+          ...value,
+          avatar: 'https://i.pravatar.cc/150?img=1',
+        })
+        .subscribe((rta) => {
+          console.log(rta);
+          // redirect
+        });
     } else {
       this.formGroup.markAllAsTouched();
-      Object.values(this.formGroup.controls).forEach((control) => control.markAsDirty());
+      Object.values(this.formGroup.controls).forEach((control) =>
+        control.markAsDirty()
+      );
       this.formGroup.updateValueAndValidity();
       this.changeDetectorRef.markForCheck();
     }
