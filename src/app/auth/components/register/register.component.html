@@ -1,0 +1,109 @@
+<section class="container">
+  <h5>Register</h5>
+  <form
+    novalidate
+    *ngIf="formGroup"
+    autocomplete="off"
+    [formGroup]="formGroup"
+    (ngSubmit)="register($event)">
+    <div>
+      <div class="grid">
+        <label for="name">
+          Full Name
+          <input
+            type="text"
+            id="name"
+            name="name"
+            placeholder="Full Name"
+            formControlName="name"
+            [attr.aria-invalid]="nameField | hasErrors"/>
+          <small *ngIf="nameField | hasErrors">
+            *Required
+          </small>
+        </label>
+
+        <label for="email">
+          Email address
+          <input
+            type="email"
+            id="email"
+            name="email"
+            placeholder="Email address"
+            formControlName="email"
+            [attr.aria-invalid]="emailField | hasErrors"/>
+          <ng-container *ngIf="emailField | hasErrors">
+            <small *ngIf="emailField | hasError: 'required'">
+              *Required
+            </small>
+            <small *ngIf="emailField | hasError: 'email'">
+              *It's not a email
+            </small>
+          </ng-container>
+        </label>
+      </div>
+
+      <label for="password">
+        Password
+        <input
+          type="password"
+          id="password"
+          name="email"
+          placeholder="Password"
+          formControlName="password"
+          [attr.aria-invalid]="passwordField | hasErrors"/>
+        <ng-container *ngIf="passwordField | hasErrors">
+          <small *ngIf="passwordField | hasError: 'required'">
+            *Required
+          </small>
+          <small *ngIf="passwordField | hasErrors">
+            * Should contain:
+            <ul>
+              <li *ngIf="passwordField | hasError: 'minlength'">
+                At least 8 characters
+              </li>
+              <li *ngIf="passwordField | hasError: 'atLeastOneUppercase'">
+                At least one uppercase
+              </li>
+              <li *ngIf="passwordField | hasError: 'atLeastOneLowercase'">
+                At least one lowercase
+              </li>
+              <li *ngIf="passwordField | hasError: 'atLeastOneNumber'">
+                At least one number
+              </li>
+              <li *ngIf="passwordField | hasError: 'atLeastOneSpecialCharacter'">
+                At least one special character
+              </li>
+            </ul>
+          </small>
+        </ng-container>
+      </label>
+
+      <label for="confirmPassword">
+        Confirm Password
+        <input
+          type="password"
+          id="confirmPassword"
+          name="email"
+          placeholder="Confirm password"
+          formControlName="confirmPassword"
+          [attr.aria-invalid]="(confirmPasswordField | hasErrors)"/>
+        <small *ngIf="confirmPasswordField | hasError: 'passwordMatch'">
+          *Not matching
+        </small>
+      </label>
+
+      <fieldset>
+        <label for="terms">
+          <input
+            type="checkbox"
+            id="terms"
+            name="terms"
+            formControlName="checkTerms"
+            [attr.aria-invalid]="checkTermsField | hasErrors"/>
+          I agree to the Terms and Conditions
+        </label>
+      </fieldset>
+      <button type="submit">Register</button>
+    </div>
+  </form>
+</section>
