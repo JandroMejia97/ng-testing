@@ -44,7 +44,7 @@ export class CustomValidators {
     const hasLowercase = /[a-z]/.test(password);
     const hasUppercase = /[A-Z]/.test(password);
     const hasSpecialCharacters = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password);
-    const minLength = password.length >= 8;
+    const minLength = password?.length >= 8;
     let validationError: ValidationErrors | null = null;
     if (!hasNumber || !hasLowercase || !hasUppercase || !hasSpecialCharacters || !minLength) {
       validationError = { strongPassword: true };
