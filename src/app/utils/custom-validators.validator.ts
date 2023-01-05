@@ -1,7 +1,18 @@
 /* eslint-disable no-useless-escape */
 import { AbstractControl, ValidationErrors } from "@angular/forms";
 
+/**
+ * A collection of custom validators
+ */
 export class CustomValidators {
+
+  /**
+   * A password validator that compares the password and confirmPassword fields
+   * and checks if they match, if not it sets the error on the confirmPassword field.
+   *
+   * @param control The control to validate
+   * @returns An error map with the validation errors if any, otherwise null
+   */
   static passwordMatch(control: AbstractControl): ValidationErrors | null {
     const password = control.get('password');
     const confirmPassword = control.get('confirmPassword');
@@ -41,6 +52,13 @@ export class CustomValidators {
     return validationError;
   }
 
+  /**
+   * A password validator that requires the control value to contain
+   * at least one number.
+   *
+   * @param control The control to validate
+   * @returns An error map with the validation errors if any, otherwise null
+   */
   static atLeastOneNumber(control: AbstractControl): ValidationErrors | null {
     const password = control.value;
     const hasNumber = /\d/.test(password);
@@ -51,6 +69,13 @@ export class CustomValidators {
     return validationError;
   }
 
+  /**
+   * A password validator that requires the control value to contain
+   * at least one lowercase letter.
+   *
+   * @param control The control to validate
+   * @returns An error map with the validation errors if any, otherwise null
+   */
   static atLeastOneLowercase(control: AbstractControl): ValidationErrors | null {
     const password = control.value;
     const hasLowercase = /[a-z]/.test(password);
@@ -61,6 +86,13 @@ export class CustomValidators {
     return validationError;
   }
 
+  /**
+   * A password validator that requires the control value to contain
+   * at least one uppercase letter.
+   *
+   * @param control The control to validate
+   * @returns An error map with the validation errors if any, otherwise null
+   */
   static atLeastOneUppercase(control: AbstractControl): ValidationErrors | null {
     const password = control.value;
     const hasUppercase = /[A-Z]/.test(password);
@@ -71,6 +103,13 @@ export class CustomValidators {
     return validationError;
   }
 
+  /**
+   * A password validator that requires the control value to contain
+   * at least one special character.
+   *
+   * @param control The control to validate
+   * @returns An error map with the validation errors if any, otherwise null
+   */
   static atLeastOneSpecialCharacter(control: AbstractControl): ValidationErrors | null {
     const password = control.value;
     const hasSpecialCharacters = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]+/.test(password);
