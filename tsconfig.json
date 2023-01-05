@@ -29,6 +29,9 @@
       "@testing": [
         "src/testing"
       ],
+      "@utils": [
+        "src/app/utils"
+      ],
       "@models/*": [
         "src/app/models/*"
       ],
@@ -41,6 +44,18 @@
       "@components/*": [
         "src/app/components/*"
       ],
+      "@directives/*": [
+        "src/app/directives/*"
+      ],
+      "@pipes/*": [
+        "src/app/pipes/*"
+      ],
+      "@auth/*": [
+        "src/app/auth/*"
+      ],
+      "@shared/*": [
+        "src/app/shared/*"
+      ]
     }
   },
   "angularCompilerOptions": {
