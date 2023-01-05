@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 import { By } from '@angular/platform-browser';
+import { queryAll, queryAllByDirective } from '@testing';
 import { HighlightDirective } from './highlight.directive';
 
 describe('HighlightDirective', () => {
@@ -68,28 +69,28 @@ describe('HighlightDirective with HostComponent', () => {
   });
 
   it('should have 3 elements with the highlight directive and 2 whitout it', () => {
-    const elements = fixture.debugElement.queryAll(By.directive(HighlightDirective));
-    const elementsWithoutDirective = fixture.debugElement.queryAll(By.css(':not([highlight])'));
+    const elements = queryAllByDirective(fixture, HighlightDirective);
+    const elementsWithoutDirective = queryAll(fixture, ':not([highlight])');
 
     expect(elements.length).toBe(3);
     expect(elementsWithoutDirective.length).toBe(2);
   });
 
   it('should have the default color when it isn\'t defined', () => {
-    const element = fixture.debugElement.queryAll(By.directive(HighlightDirective))[0];
+    const element = queryAllByDirective(fixture, HighlightDirective)[0];
     const directive = element.injector.get(HighlightDirective);
 
     expect(element.nativeElement.style.backgroundColor).toBe(directive.defaultColor);
   });
 
   it('should have the color defined', () => {
-    const element = fixture.debugElement.queryAll(By.directive(HighlightDirective))[1];
+    const element = queryAllByDirective(fixture, HighlightDirective)[1];
 
     expect(element.nativeElement.style.backgroundColor).toBe('yellow');
   });
 
   it('should bind the color defined in the input and change it', () => {
-    const elementDebug = fixture.debugElement.queryAll(By.directive(HighlightDirective))[2];
+    const elementDebug = queryAllByDirective(fixture, HighlightDirective)[2];
     const element: HTMLParagraphElement = elementDebug.nativeElement;
     const inputDebug = fixture.debugElement.query(By.css('input'));
     const inputElement: HTMLInputElement = inputDebug.nativeElement;

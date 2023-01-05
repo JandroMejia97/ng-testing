@@ -36,9 +36,11 @@ export function triggerEventHandler<T>(
  */
 export function triggerClickEventHandler(
   fixture: ComponentFixture<unknown>,
-  selector: string
+  selector: string,
+  withTestId = false,
+  eventObj: unknown = null
 ): void {
-  triggerEventHandler(fixture, selector, 'click');
+  triggerEventHandler(fixture, selector, 'click', withTestId, eventObj);
 }
 
 /**
