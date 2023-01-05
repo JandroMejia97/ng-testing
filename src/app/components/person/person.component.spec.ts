@@ -1,8 +1,12 @@
 import { Component, DebugElement } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { By } from '@angular/platform-browser';
+
 import { Person } from '@models/person.model';
-import { getTextContentBySelector, query, queryByDirective } from '@testing';
+import {
+  getTextContentBySelector,
+  queryByDirective,
+  triggerClickEventHandler,
+} from '@testing';
 
 import { PersonComponent } from './person.component';
 
@@ -70,14 +74,10 @@ describe('PersonComponent', () => {
 
     it('should display a text with IMC when do click', () => {
       // Arrange
-      const buttonDebugElement: DebugElement = query(
-        fixture,
-        'button[name="calculateIMC"]'
-      );
       const clickSpy = spyOn(component, 'calculateIMC').and.callThrough();
 
       // Act
-      buttonDebugElement.triggerEventHandler('click', null);
+      triggerClickEventHandler(fixture, 'button[name="calculateIMC"]');
       fixture.detectChanges();
 
       // Assert
@@ -92,10 +92,6 @@ describe('PersonComponent', () => {
 
     it('should emit an event when do click', () => {
       // Arrange
-      const buttonDebugElement: DebugElement = query(
-        fixture,
-        'button[name="selectPerson"]'
-      );
       const clickSpy = spyOn(component, 'onPersonSelected').and.callThrough();
 
       let selectedPerson: Person | undefined;
@@ -104,7 +100,7 @@ describe('PersonComponent', () => {
       component.onSelected.subscribe({
         next: (person: Person) => (selectedPerson = person),
       });
-      buttonDebugElement.triggerEventHandler('click', null);
+      triggerClickEventHandler(fixture, 'button[name="selectPerson"]');
       fixture.detectChanges();
 
       // Assert
@@ -177,11 +173,6 @@ describe('PersonComponent from HostComponent', () => {
 
     it('should emit an event when do click', () => {
       // Arrange
-      const button: DebugElement = query(
-        fixture,
-        'button[name="selectPerson"]'
-      );
-
       const onChildEventSpy = spyOn(
         personDebugEle.componentInstance,
         'onPersonSelected'
@@ -192,7 +183,7 @@ describe('PersonComponent from HostComponent', () => {
       ).and.callThrough();
 
       // Act
-      button.triggerEventHandler('click', null);
+      triggerClickEventHandler(fixture, 'button[name="selectPerson"]');
 
       // Assert
       expect(onChildEventSpy).toHaveBeenCalled();
