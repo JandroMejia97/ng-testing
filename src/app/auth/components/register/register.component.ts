@@ -1,13 +1,20 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  OnDestroy,
+  OnInit,
+} from '@angular/core';
 import {
   FormBuilder,
   FormControl,
   FormGroup,
   Validators,
 } from '@angular/forms';
-import { distinctUntilChanged, Subscription, tap } from 'rxjs';
+import { distinctUntilChanged, Subscription } from 'rxjs';
 
 import { CustomValidators } from '@utils';
+import { UserService } from '@auth/services/user.service';
 
 @Component({
   selector: 'app-register',
@@ -21,19 +28,19 @@ export class RegisterComponent implements OnInit, OnDestroy {
 
   constructor(
     private formBuilder: FormBuilder,
+    private userService: UserService,
     private changeDetectorRef: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
     this.buildForm();
-    this.subscription = this.formGroup.valueChanges.pipe(
-      distinctUntilChanged(),
-      tap((value) => console.log(value))
-    ).subscribe({
-      next: () => {
-        this.changeDetectorRef.markForCheck();
-      }
-    })
+    this.subscription = this.formGroup.valueChanges
+      .pipe(distinctUntilChanged())
+      .subscribe({
+        next: () => {
+          this.changeDetectorRef.markForCheck();
+        },
+      });
   }
 
   ngOnDestroy(): void {
@@ -69,13 +76,16 @@ export class RegisterComponent implements OnInit, OnDestroy {
     event.preventDefault();
     if (this.formGroup.valid) {
       const value = this.formGroup.value;
-      /* this.usersService.create(value)
+      this.userService.create(value)
       .subscribe((rta) => {
         console.log(rta);
         // redirect
-      }); */
+      });
     } else {
       this.formGroup.markAllAsTouched();
+      Object.values(this.formGroup.controls).forEach((control) => control.markAsDirty());
+      this.formGroup.updateValueAndValidity();
+      this.changeDetectorRef.markForCheck();
     }
   }
 

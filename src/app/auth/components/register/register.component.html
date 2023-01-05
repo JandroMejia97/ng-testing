@@ -55,7 +55,7 @@
           <small *ngIf="passwordField | hasError: 'required'">
             *Required
           </small>
-          <small *ngIf="passwordField | hasErrors">
+          <small *ngIf="(passwordField | hasErrors) && !(passwordField | hasError: 'required')">
             * Should contain:
             <ul>
               <li *ngIf="passwordField | hasError: 'minlength'">
@@ -87,9 +87,14 @@
           placeholder="Confirm password"
           formControlName="confirmPassword"
           [attr.aria-invalid]="(confirmPasswordField | hasErrors)"/>
-        <small *ngIf="confirmPasswordField | hasError: 'passwordMatch'">
-          *Not matching
-        </small>
+        <ng-container *ngIf="confirmPasswordField | hasErrors">
+          <small *ngIf="confirmPasswordField | hasError: 'required'">
+            *Required
+          </small>
+          <small *ngIf="confirmPasswordField | hasError: 'passwordMatch'">
+            *Not matching
+          </small>
+        </ng-container>
       </label>
 
       <fieldset>
