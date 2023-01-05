@@ -23,7 +23,6 @@ export class CustomValidators {
       confirmPassword.setErrors({ passwordMatch: true });
       return { passwordMatch: true };
     }
-    confirmPassword.setErrors(null);
     return null;
   }
 

@@ -7,6 +7,7 @@ import { SharedModule } from '@shared/shared.module';
 import { LoginComponent } from './components/login/login.component';
 import { RegisterComponent } from './components/register/register.component';
 import { AuthRoutingModule } from './auth-routing.module';
+import { UserService } from './services/user.service';
 
 
 @NgModule({
@@ -19,6 +20,7 @@ import { AuthRoutingModule } from './auth-routing.module';
     SharedModule,
     ReactiveFormsModule,
     AuthRoutingModule
-  ]
+  ],
+  providers: [UserService]
 })
 export class AuthModule { }

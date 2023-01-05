@@ -1,5 +1,8 @@
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
+
+import { UserService } from '@auth/services/user.service';
 import { SharedModule } from '@shared/shared.module';
 
 import { RegisterComponent } from './register.component';
@@ -11,7 +14,8 @@ describe('RegisterComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       declarations: [RegisterComponent],
-      imports: [ReactiveFormsModule, SharedModule],
+      imports: [ReactiveFormsModule, SharedModule, HttpClientTestingModule],
+      providers: [UserService]
     }).compileComponents();
 
     fixture = TestBed.createComponent(RegisterComponent);
