@@ -21,6 +21,7 @@ import {
 } from '@testing';
 
 import { ProductsComponent } from './products.component';
+import { RouterTestingModule } from '@angular/router/testing';
 
 describe('ProductsComponent', () => {
   let component: ProductsComponent;
@@ -44,6 +45,7 @@ describe('ProductsComponent', () => {
 
     await TestBed.configureTestingModule({
       declarations: [ProductsComponent, ProductComponent],
+      imports: [RouterTestingModule],
       providers: [
         {
           provide: ProductService,

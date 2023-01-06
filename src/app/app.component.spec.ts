@@ -1,11 +1,20 @@
+/* eslint-disable @angular-eslint/component-class-suffix */
+import { Component } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 
-import {
-  queryAllByDirective,
-  RouterLinkDirectiveStub,
-} from '@testing';
+import { queryAllByDirective, RouterLinkDirectiveStub } from '@testing';
 import { AppComponent } from './app.component';
+
+@Component({
+  selector: 'app-banner',
+})
+class BannerComponentStub {}
+
+@Component({
+  selector: 'app-footer',
+})
+class FooterComponentStub {}
 
 describe('AppComponent', () => {
   let app: AppComponent;
@@ -14,7 +23,12 @@ describe('AppComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [RouterTestingModule],
-      declarations: [AppComponent, RouterLinkDirectiveStub],
+      declarations: [
+        AppComponent,
+        BannerComponentStub,
+        FooterComponentStub,
+        RouterLinkDirectiveStub,
+      ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(AppComponent);
