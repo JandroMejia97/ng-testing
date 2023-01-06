@@ -2,14 +2,16 @@ import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { DebugElement } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
+import { faker } from '@faker-js/faker';
 
 import { UserService } from '@auth/services/user.service';
+import { CreateUserDTO, User } from '@models/user.model';
 import { SharedModule } from '@shared/shared.module';
-import { setValueOnInputElement, query } from '@testing';
+import { setValueOnInputElement, query, observableData } from '@testing';
 
 import { RegisterComponent } from './register.component';
 
-describe('RegisterComponent', () => {
+fdescribe('RegisterComponent', () => {
   let component: RegisterComponent;
   let fixture: ComponentFixture<RegisterComponent>;
   let userServiceSpy: jasmine.SpyObj<UserService>;
@@ -193,7 +195,11 @@ describe('RegisterComponent', () => {
         setValueOnInputElement(emailNative, '');
 
         fixture.detectChanges();
-        let errorNative: HTMLElement = query(fixture, 'email-required', true).nativeElement;
+        let errorNative: HTMLElement = query(
+          fixture,
+          'email-required',
+          true
+        ).nativeElement;
 
         textContext = `Check the aria-invalid attribute should be true`;
         expect(emailNative.getAttribute('aria-invalid'))
@@ -204,7 +210,9 @@ describe('RegisterComponent', () => {
         expect(errorNative).withContext(textContext).toBeTruthy();
 
         textContext = 'Check if error message contains the word "required"';
-        expect(errorNative?.textContent?.trim().toLowerCase()).toContain('required');
+        expect(errorNative?.textContent?.trim().toLowerCase()).toContain(
+          'required'
+        );
 
         // Invalid email
         setValueOnInputElement(emailNative, 'test');
@@ -232,6 +240,55 @@ describe('RegisterComponent', () => {
           .withContext(textContext)
           .toBe('false');
       });
+    });
+  });
+
+  describe('Tests for "register"', () => {
+    const password = '1A345678a';
+    let mockData: CreateUserDTO & {
+      confirmPassword: string;
+      checkTerms: boolean;
+      avatar: string;
+    };
+    let mockUser: User;
+
+    beforeEach(() => {
+      mockUser = {
+        password,
+        id: faker.datatype.uuid(),
+        name: faker.name.fullName(),
+        email: faker.internet.email(),
+      };
+
+      mockData = {
+        password,
+        name: faker.name.firstName(),
+        email: faker.internet.email(),
+        confirmPassword: password,
+        checkTerms: true,
+        avatar: 'https://i.pravatar.cc/150?img=1',
+      };
+      spyOn(console, 'log');
+    });
+
+    it('should send the data to server', () => {
+      // Arrange
+      component.formGroup.patchValue(mockData);
+      const buttonElement: HTMLButtonElement = query(
+        fixture,
+        'register-button',
+        true
+      ).nativeElement;
+      const registerSpy = spyOn(component, 'register').and.callThrough();
+      userServiceSpy.create.and.returnValue(observableData(mockUser));
+
+      // Act
+      buttonElement.click();
+
+      // Assert
+      expect(buttonElement).toBeDefined();
+      expect(registerSpy).toHaveBeenCalledTimes(1);
+      expect(userServiceSpy.create).toHaveBeenCalledOnceWith(mockData);
     });
   });
 });
