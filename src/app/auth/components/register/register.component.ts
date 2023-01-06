@@ -15,6 +15,7 @@ import { distinctUntilChanged, Subscription } from 'rxjs';
 
 import { CustomValidators } from '@utils';
 import { UserService } from '@auth/services/user.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-register',
@@ -28,6 +29,7 @@ export class RegisterComponent implements OnInit, OnDestroy {
   status: 'loading' | 'error' | 'success' = 'success';
 
   constructor(
+    private router: Router,
     private formBuilder: FormBuilder,
     private userService: UserService,
     private changeDetectorRef: ChangeDetectorRef
@@ -89,6 +91,7 @@ export class RegisterComponent implements OnInit, OnDestroy {
         .subscribe({
           next: () => {
             this.status = 'success';
+            this.router.navigateByUrl('/auth/login');
           },
           error: (err) => {
             this.status = 'error';

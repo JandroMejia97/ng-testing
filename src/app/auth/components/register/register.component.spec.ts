@@ -23,11 +23,13 @@ import {
 } from '@testing';
 
 import { RegisterComponent } from './register.component';
+import { Router, RouterModule } from '@angular/router';
 
 describe('RegisterComponent', () => {
   let component: RegisterComponent;
   let fixture: ComponentFixture<RegisterComponent>;
   let userServiceSpy: jasmine.SpyObj<UserService>;
+  let routerSpy: jasmine.SpyObj<Router>;
 
   beforeEach(async () => {
     const userServiceSpyObj = jasmine.createSpyObj('UserService', [
@@ -35,14 +37,20 @@ describe('RegisterComponent', () => {
       'isAvailableByEmail',
     ]);
 
+    const routerSpyObj = jasmine.createSpyObj('Router', ['navigateByUrl']);
+
     await TestBed.configureTestingModule({
       declarations: [RegisterComponent],
-      imports: [ReactiveFormsModule, SharedModule, HttpClientTestingModule],
+      imports: [ReactiveFormsModule, SharedModule, RouterModule, HttpClientTestingModule],
       providers: [
         {
           provide: UserService,
           useValue: userServiceSpyObj,
         },
+        {
+          provide: Router,
+          useValue: routerSpyObj,
+        }
       ],
     }).compileComponents();
 
@@ -50,10 +58,14 @@ describe('RegisterComponent', () => {
     component = fixture.componentInstance;
 
     fixture.detectChanges();
+    // UserService spy
     userServiceSpy = TestBed.inject(UserService) as jasmine.SpyObj<UserService>;
     userServiceSpy.isAvailableByEmail.and.returnValue(
       observableData({ isAvailable: true })
     );
+
+    // Router spy
+    routerSpy = TestBed.inject(Router) as jasmine.SpyObj<Router>;
   });
 
   it('should create', () => {
@@ -442,6 +454,11 @@ describe('RegisterComponent', () => {
 
       textContent = 'The response should be handled and the status updated';
       expect(component.status).withContext(textContent).toEqual('success');
+
+      textContent = 'Should navigate to the login page';
+      expect(routerSpy.navigateByUrl).withContext(textContent).toHaveBeenCalledOnceWith(
+        '/auth/login'
+      );
     }));
   });
 });
