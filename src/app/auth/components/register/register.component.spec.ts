@@ -1,6 +1,11 @@
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { DebugElement } from '@angular/core';
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import {
+  ComponentFixture,
+  fakeAsync,
+  TestBed,
+  tick,
+} from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
 import { faker } from '@faker-js/faker';
 
@@ -11,7 +16,7 @@ import { setValueOnInputElement, query, observableData } from '@testing';
 
 import { RegisterComponent } from './register.component';
 
-fdescribe('RegisterComponent', () => {
+describe('RegisterComponent', () => {
   let component: RegisterComponent;
   let fixture: ComponentFixture<RegisterComponent>;
   let userServiceSpy: jasmine.SpyObj<UserService>;
@@ -268,10 +273,9 @@ fdescribe('RegisterComponent', () => {
         checkTerms: true,
         avatar: 'https://i.pravatar.cc/150?img=1',
       };
-      spyOn(console, 'log');
     });
 
-    it('should send the data to server', () => {
+    it('should send the data to server successfully', fakeAsync(() => {
       // Arrange
       component.formGroup.patchValue(mockData);
       const buttonElement: HTMLButtonElement = query(
@@ -283,12 +287,26 @@ fdescribe('RegisterComponent', () => {
       userServiceSpy.create.and.returnValue(observableData(mockUser));
 
       // Act
+      expect(component.status).toEqual('success');
       buttonElement.click();
+      fixture.detectChanges();
+      // expect(component.status).toEqual('loading');
+
+      tick();
+      fixture.detectChanges();
 
       // Assert
+      let textContent = 'The register method should be called';
       expect(buttonElement).toBeDefined();
-      expect(registerSpy).toHaveBeenCalledTimes(1);
-      expect(userServiceSpy.create).toHaveBeenCalledOnceWith(mockData);
-    });
+      expect(registerSpy).withContext(textContent).toHaveBeenCalledTimes(1);
+
+      textContent = 'The create method should be called';
+      expect(userServiceSpy.create)
+        .withContext(textContent)
+        .toHaveBeenCalledOnceWith(mockData);
+
+      textContent = 'The response should be handled and the status updated';
+      expect(component.status).withContext(textContent).toEqual('success');
+    }));
   });
 });

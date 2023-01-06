@@ -25,6 +25,7 @@ import { UserService } from '@auth/services/user.service';
 export class RegisterComponent implements OnInit, OnDestroy {
   formGroup!: FormGroup;
   subscription!: Subscription;
+  status: 'loading' | 'error' | 'success' = 'success';
 
   constructor(
     private formBuilder: FormBuilder,
@@ -74,15 +75,23 @@ export class RegisterComponent implements OnInit, OnDestroy {
   register(event: Event) {
     event.preventDefault();
     if (this.formGroup.valid) {
+      this.status = 'loading';
       const value = this.formGroup.value;
       this.userService
         .create({
           ...value,
           avatar: 'https://i.pravatar.cc/150?img=1',
         })
-        .subscribe((rta) => {
-          console.log(rta);
-          // redirect
+        .subscribe({
+          next: () => {
+            this.status = 'success';
+          },
+          error: (err) => {
+            this.status = 'error';
+          },
+          complete: () => {
+            this.changeDetectorRef.markForCheck();
+          }
         });
     } else {
       this.formGroup.markAllAsTouched();

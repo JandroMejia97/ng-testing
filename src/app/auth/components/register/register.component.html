@@ -134,8 +134,17 @@
       </fieldset>
       <button
         type="submit"
-        data-testId="register-button">
-        Register
+        data-testId="register-button"
+        [disabled]="status === 'loading'"
+        [attr.aria-busy]="status === 'loading'">
+        <span>
+          <ng-container *ngIf="status === 'loading'; else notLoading">
+            Loading...
+          </ng-container>
+          <ng-template #notLoading>
+            Register
+          </ng-template>
+        </span>
       </button>
     </div>
   </form>
