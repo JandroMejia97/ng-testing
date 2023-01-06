@@ -52,7 +52,11 @@ export class RegisterComponent implements OnInit, OnDestroy {
     this.formGroup = this.formBuilder.group(
       {
         name: [null, [Validators.required]],
-        email: [null, [Validators.required, Validators.email]],
+        email: [
+          null,
+          [Validators.required, Validators.email],
+          [CustomValidators.checkIfEmailExists(this.userService)],
+        ],
         password: [
           null,
           [
@@ -91,7 +95,7 @@ export class RegisterComponent implements OnInit, OnDestroy {
           },
           complete: () => {
             this.changeDetectorRef.markForCheck();
-          }
+          },
         });
     } else {
       this.formGroup.markAllAsTouched();

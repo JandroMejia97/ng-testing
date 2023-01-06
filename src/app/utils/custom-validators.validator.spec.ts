@@ -1,5 +1,11 @@
-import { FormControl, FormGroup } from "@angular/forms";
-import { CustomValidators } from "./custom-validators.validator";
+import { waitForAsync } from '@angular/core/testing';
+import { FormControl, FormGroup } from '@angular/forms';
+
+import { UserService } from '@auth/services/user.service';
+import { observableData } from '@testing';
+import { switchMap, take } from 'rxjs';
+
+import { CustomValidators } from './custom-validators.validator';
 
 describe('CustomValidators', () => {
   describe('passwordMatch', () => {
@@ -32,13 +38,13 @@ describe('CustomValidators', () => {
       expect(result).toEqual({ passwordMatch: true });
     });
 
-    it('should throw an error if the a field isn\'t defined', () => {
+    it("should throw an error if the a field isn't defined", () => {
       formGroup.removeControl('password');
 
       expect(() => CustomValidators.passwordMatch(formGroup)).toThrowError();
     });
 
-    it('should throw an error if the confirmPassword field isn\'t defined', () => {
+    it("should throw an error if the confirmPassword field isn't defined", () => {
       formGroup.removeControl('confirmPassword');
 
       expect(() => CustomValidators.passwordMatch(formGroup)).toThrowError();
@@ -144,5 +150,55 @@ describe('CustomValidators', () => {
         expect(result).toEqual({ atLeastOneSpecialCharacter: true });
       });
     });
+  });
+
+  describe('checkIfEmailExists', () => {
+    let control: FormControl;
+    let userServiceSpy: jasmine.SpyObj<UserService>;
+    const email = 'test@test.com';
+
+    beforeEach(() => {
+      userServiceSpy = jasmine.createSpyObj('UserService', [
+        'isAvailableByEmail',
+      ]);
+      control = new FormControl(null);
+    });
+
+    it('should return null if the email does not exist', waitForAsync(() => {
+      userServiceSpy.isAvailableByEmail.and.returnValue(
+        observableData({
+          isAvailable: true,
+        })
+      );
+
+      control.setValue(email);
+      const validator = CustomValidators.checkIfEmailExists(userServiceSpy);
+      validator(control).subscribe({
+        next: (result) => {
+          expect(result).toBeNull();
+          expect(userServiceSpy.isAvailableByEmail).toHaveBeenCalledWith(email);
+          expect(control.errors).toBeNull();
+        }
+      });
+
+    }));
+
+    it('should return an error if the email exists', waitForAsync(() => {
+      userServiceSpy.isAvailableByEmail.and.returnValue(
+        observableData({
+          isAvailable: false,
+        })
+      );
+
+      control.setValue(email);
+      const validator = CustomValidators.checkIfEmailExists(userServiceSpy);
+      validator(control).subscribe({
+        next: (result) => {
+          expect(result).not.toBeNull();
+          expect(userServiceSpy.isAvailableByEmail).toHaveBeenCalledWith(email);
+          expect(control.errors).toEqual({ emailExists: true });
+        }
+      });
+    }));
   });
 });

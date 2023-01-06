@@ -1,5 +1,8 @@
 /* eslint-disable no-useless-escape */
 import { AbstractControl, ValidationErrors } from '@angular/forms';
+import { debounceTime, distinctUntilChanged, map, Observable, switchMap } from 'rxjs';
+
+import { UserService } from '@auth/services/user.service';
 
 /**
  * A collection of custom validators
@@ -138,5 +141,29 @@ export class CustomValidators {
       validationError = { atLeastOneSpecialCharacter: true };
     }
     return validationError;
+  }
+
+  /**
+   * Checks if the email is available
+   *
+   * @param userService Instance of UserService
+   * @returns A function that returns an observable with the validation errors if any, otherwise null
+   */
+  static checkIfEmailExists(
+    userService: UserService,
+  ): (control: AbstractControl) => Observable<ValidationErrors | null> {
+    return (control: AbstractControl) => {
+      return control.valueChanges.pipe(
+        distinctUntilChanged(),
+        debounceTime(500),
+        switchMap((email) => userService.isAvailableByEmail(email)),
+        map((response) => {
+          if (!response.isAvailable) {
+            return { emailExists: true };
+          }
+          return null;
+        })
+      );
+    };
   }
 }
