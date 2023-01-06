@@ -3,31 +3,21 @@ import { ComponentFixture } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 
 /**
- * Query a component (or element) by its Test ID
- *
- * @param fixture The fixture of the component to query
- * @param testId The Test ID of the element to query
- * @returns The element with the given Test ID
- */
-export function queryByTestId<T>(
-  fixture: ComponentFixture<T>,
-  testId: string
-): DebugElement {
-  const selector = `[data-testid="${testId}"]`;
-  return query(fixture, selector);
-}
-
-/**
  * Query a component (or element) by its CSS selector
  *
  * @param fixture The fixture of the component to query
  * @param selector The CSS selector of the element to query
+ * @param withTestId Whether to use the test id or not
  * @returns The element with the given CSS selector
  */
 export function query<T>(
   fixture: ComponentFixture<T>,
-  selector: string
+  selector: string,
+  withTestId = false
 ): DebugElement {
+  if (withTestId) {
+    selector = `[data-testId="${selector}"]`;
+  }
   const debugElement = fixture.debugElement.query(By.css(selector));
   if (!debugElement) {
     throw new Error(`Could not find element with selector: ${selector}`);

@@ -1,7 +1,6 @@
-import { DebugElement } from '@angular/core';
 import { ComponentFixture } from '@angular/core/testing';
 
-import { query, queryByTestId } from './finders';
+import { query } from './finders';
 
 /**
  * Triggers an event handler on an element
@@ -19,12 +18,7 @@ export function triggerEventHandler<T>(
   withTestId = false,
   eventObj: unknown = null
 ): void {
-  let debugElement: DebugElement;
-  if (withTestId) {
-    debugElement = queryByTestId(fixture, selector);
-  } else {
-    debugElement = query(fixture, selector);
-  }
+  const debugElement = query(fixture, selector, withTestId);
   debugElement.triggerEventHandler(eventName, eventObj);
 }
 
@@ -59,12 +53,7 @@ export function triggerEventOnElement(
   withTestId = false,
   eventObj?: EventInit
 ): void {
-  let debugElement: DebugElement;
-  if (withTestId) {
-    debugElement = queryByTestId(fixture, selector);
-  } else {
-    debugElement = query(fixture, selector);
-  }
+  const debugElement = query(fixture, selector, withTestId);
   const element: HTMLElement = debugElement.nativeElement;
   element.dispatchEvent(new Event(eventName, eventObj));
 }
