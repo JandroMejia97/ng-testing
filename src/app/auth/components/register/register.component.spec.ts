@@ -30,7 +30,10 @@ describe('RegisterComponent', () => {
   let userServiceSpy: jasmine.SpyObj<UserService>;
 
   beforeEach(async () => {
-    const userServiceSpyObj = jasmine.createSpyObj('UserService', ['create']);
+    const userServiceSpyObj = jasmine.createSpyObj('UserService', [
+      'create',
+      'isAvailableByEmail',
+    ]);
 
     await TestBed.configureTestingModule({
       declarations: [RegisterComponent],
@@ -48,6 +51,9 @@ describe('RegisterComponent', () => {
 
     fixture.detectChanges();
     userServiceSpy = TestBed.inject(UserService) as jasmine.SpyObj<UserService>;
+    userServiceSpy.isAvailableByEmail.and.returnValue(
+      observableData({ isAvailable: true })
+    );
   });
 
   it('should create', () => {
@@ -253,6 +259,30 @@ describe('RegisterComponent', () => {
           .withContext(textContext)
           .toBe('false');
       });
+
+      it('should be show a message if the email is already registered', fakeAsync(() => {
+        const emailNative: HTMLInputElement = emailDebug.nativeElement;
+        const email = 'test@test.com';
+        userServiceSpy.isAvailableByEmail.and.returnValue(
+          observableData({ isAvailable: false })
+        );
+        setValueOnInputElement(emailNative, email);
+
+        fixture.detectChanges();
+        tick();
+
+        const errorNative: HTMLElement = query(
+          fixture,
+          'email-exists',
+          true
+        ).nativeElement;
+
+        textContext = 'Method "isAvailableByEmail" should be called';
+        expect(userServiceSpy.isAvailableByEmail).withContext(textContext).toHaveBeenCalledWith(email);
+        textContext = 'Check if there is an error message';
+        expect(errorNative).withContext(textContext).toBeDefined();
+        expect(userServiceSpy.isAvailableByEmail).toHaveBeenCalledWith(email);
+      }));
     });
   });
 

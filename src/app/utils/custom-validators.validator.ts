@@ -1,6 +1,6 @@
 /* eslint-disable no-useless-escape */
 import { AbstractControl, ValidationErrors } from '@angular/forms';
-import { debounceTime, distinctUntilChanged, map, Observable, switchMap } from 'rxjs';
+import { map, Observable } from 'rxjs';
 
 import { UserService } from '@auth/services/user.service';
 
@@ -153,10 +153,8 @@ export class CustomValidators {
     userService: UserService,
   ): (control: AbstractControl) => Observable<ValidationErrors | null> {
     return (control: AbstractControl) => {
-      return control.valueChanges.pipe(
-        distinctUntilChanged(),
-        debounceTime(500),
-        switchMap((email) => userService.isAvailableByEmail(email)),
+      const email = control.value;
+      return userService.isAvailableByEmail(email).pipe(
         map((response) => {
           if (!response.isAvailable) {
             return { emailExists: true };

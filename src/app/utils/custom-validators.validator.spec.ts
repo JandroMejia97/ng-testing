@@ -3,7 +3,6 @@ import { FormControl, FormGroup } from '@angular/forms';
 
 import { UserService } from '@auth/services/user.service';
 import { observableData } from '@testing';
-import { switchMap, take } from 'rxjs';
 
 import { CustomValidators } from './custom-validators.validator';
 
@@ -196,7 +195,7 @@ describe('CustomValidators', () => {
         next: (result) => {
           expect(result).not.toBeNull();
           expect(userServiceSpy.isAvailableByEmail).toHaveBeenCalledWith(email);
-          expect(control.errors).toEqual({ emailExists: true });
+          expect(result).toEqual({ emailExists: true });
         }
       });
     }));
