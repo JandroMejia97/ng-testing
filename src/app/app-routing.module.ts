@@ -4,12 +4,11 @@ import { OthersComponent } from '@components/others/others.component';
 
 import { PeopleComponent } from '@components/people/people.component';
 import { PicoPreviewComponent } from './components/pico-preview/pico-preview.component';
-import { ProductsComponent } from './components/products/products.component';
 
 const routes: Routes = [
   {
     path: 'products',
-    component: ProductsComponent,
+    loadChildren: () => import('@products/products.module').then(m => m.ProductsModule)
   },
   {
     path: 'pico-preview',

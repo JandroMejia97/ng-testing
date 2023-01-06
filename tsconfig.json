@@ -53,6 +53,9 @@
       "@auth/*": [
         "src/app/auth/*"
       ],
+      "@products/*": [
+        "src/app/products/*"
+      ],
       "@shared/*": [
         "src/app/shared/*"
       ]

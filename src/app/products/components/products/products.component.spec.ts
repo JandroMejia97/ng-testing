@@ -6,7 +6,7 @@ import {
   tick,
 } from '@angular/core/testing';
 
-import { ProductComponent } from '@components/product/product.component';
+import { ProductComponent } from '@products/components/product/product.component';
 import { generateManyProducts } from '@models/mocks/product.mock';
 import { Product } from '@models/product.model';
 import { ValueService } from '@services/value.service';
