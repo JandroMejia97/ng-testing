@@ -1,6 +1,14 @@
-<figure *ngIf="product">
-  <img [src]="product.images[0]" [alt]="product.title">
-  <figcaption>
-    {{ product.title }} - {{ product.price | currency }}
-  </figcaption>
-</figure>
+<div *ngIf="product">
+  <figure>
+    <img [src]="product.images[0]" [alt]="product.title">
+    <figcaption>
+      {{ product.title }} - {{ product.price | currency }}
+    </figcaption>
+  </figure>
+  <p>
+    {{ product.description }}
+  </p>
+  <a [routerLink]="['./', product.id]">
+    See more
+  </a>
+</div>
