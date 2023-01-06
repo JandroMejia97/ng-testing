@@ -12,7 +12,7 @@ import { faker } from '@faker-js/faker';
 import { UserService } from '@auth/services/user.service';
 import { CreateUserDTO, User } from '@models/user.model';
 import { SharedModule } from '@shared/shared.module';
-import { setValueOnInputElement, query, observableData } from '@testing';
+import { setValueOnInputElement, query, observableData, observableError } from '@testing';
 
 import { RegisterComponent } from './register.component';
 
@@ -308,5 +308,69 @@ describe('RegisterComponent', () => {
       textContent = 'The response should be handled and the status updated';
       expect(component.status).withContext(textContent).toEqual('success');
     }));
+
+    it('should handle the error', fakeAsync(() => {
+      // Arrange
+      component.formGroup.patchValue(mockData);
+      const buttonElement: HTMLButtonElement = query(
+        fixture,
+        'register-button',
+        true
+      ).nativeElement;
+      const registerSpy = spyOn(component, 'register').and.callThrough();
+      const error = new Error('Error');
+      userServiceSpy.create.and.returnValue(observableError(error));
+
+      // Act
+      expect(component.status).toEqual('success');
+      buttonElement.click();
+      fixture.detectChanges();
+      // expect(component.status).toEqual('loading');
+
+      tick();
+      fixture.detectChanges();
+
+      // Assert
+      let textContent = 'The register method should be called';
+      expect(buttonElement).toBeDefined();
+      expect(registerSpy).withContext(textContent).toHaveBeenCalledTimes(1);
+
+      textContent = 'The create method should be called';
+      expect(userServiceSpy.create)
+        .withContext(textContent)
+        .toHaveBeenCalledOnceWith(mockData);
+
+      textContent = 'The response should be handled and the status updated';
+      expect(component.status).withContext(textContent).toEqual('error');
+    }));
+
+    it('should handle the error when the form is not valid', () => {
+      // Arrange
+      const buttonElement: HTMLButtonElement = query(
+        fixture,
+        'register-button',
+        true
+      ).nativeElement;
+      const registerSpy = spyOn(component, 'register').and.callThrough();
+
+      // Act
+      expect(component.status).toEqual('success');
+      buttonElement.click();
+      fixture.detectChanges();
+
+      // Assert
+      let textContent = 'The register method should be called';
+      expect(buttonElement).toBeDefined();
+      expect(registerSpy).withContext(textContent).toHaveBeenCalledTimes(1);
+
+      textContent = 'The form should be invalid';
+      expect(component.formGroup.status).withContext(textContent).toEqual('INVALID');
+      textContent = 'The form should be touched';
+      expect(component.formGroup.touched).withContext(textContent).toBeTruthy()
+      Object.entries(component.formGroup.controls).forEach(([key, control]) => {
+        textContent = `The control '${key}' should be dirty`;
+        expect(control.dirty).withContext(textContent).toBeTruthy();
+      });
+    });
   });
 });

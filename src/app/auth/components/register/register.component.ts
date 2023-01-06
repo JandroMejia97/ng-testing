@@ -107,10 +107,6 @@ export class RegisterComponent implements OnInit, OnDestroy {
     return this.formGroup?.get('name') as FormControl;
   }
 
-  get lastNameField(): FormControl {
-    return this.formGroup?.get('lastName') as FormControl;
-  }
-
   get emailField(): FormControl {
     return this.formGroup?.get('email') as FormControl;
   }
