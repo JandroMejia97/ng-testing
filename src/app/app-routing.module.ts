@@ -5,7 +5,7 @@ import { OthersComponent } from '@components/others/others.component';
 import { PeopleComponent } from '@components/people/people.component';
 import { PicoPreviewComponent } from './components/pico-preview/pico-preview.component';
 
-const routes: Routes = [
+export const routes: Routes = [
   {
     path: 'products',
     loadChildren: () => import('@products/products.module').then(m => m.ProductsModule)

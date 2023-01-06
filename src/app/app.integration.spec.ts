@@ -1,4 +1,4 @@
-import { Component, NO_ERRORS_SCHEMA } from '@angular/core';
+import { NO_ERRORS_SCHEMA } from '@angular/core';
 import {
   ComponentFixture,
   fakeAsync,
@@ -11,32 +11,11 @@ import { RouterTestingModule } from '@angular/router/testing';
 import {
   query,
   queryAllByDirective,
-  queryByDirective,
   triggerClickEventOnElement,
 } from '@testing';
+import { routes } from './app-routing.module';
 import { AppComponent } from './app.component';
-
-@Component({
-  selector: 'app-banner',
-})
-class BannerStubComponent {}
-
-@Component({
-  selector: 'app-footer',
-})
-class FooterStubComponent {}
-
-@Component({
-  selector: 'app-others',
-})
-class OthersStubComponent {}
-
-const routes = [
-  {
-    path: 'others',
-    component: OthersStubComponent,
-  }
-]
+import { AppModule } from './app.module';
 
 fdescribe('AppIntegration', () => {
   let fixture: ComponentFixture<AppComponent>;
@@ -45,14 +24,8 @@ fdescribe('AppIntegration', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [
-        AppComponent,
-        BannerStubComponent,
-        FooterStubComponent,
-        OthersStubComponent,
-      ],
       schemas: [NO_ERRORS_SCHEMA],
-      imports: [RouterTestingModule.withRoutes(routes)],
+      imports: [AppModule, RouterTestingModule.withRoutes(routes)],
     }).compileComponents();
   });
 
@@ -87,9 +60,31 @@ fdescribe('AppIntegration', () => {
 
     tick();
     fixture.detectChanges();
-    const othersComponent = queryByDirective(fixture, OthersStubComponent);
+    const othersComponent = query(fixture, 'app-others');
 
     expect(othersComponent).toBeDefined();
     expect(router.url).toBe('/others');
+  }));
+
+  it('should render PeopleComponent', fakeAsync(() => {
+    triggerClickEventOnElement(fixture, 'people-link', true);
+
+    tick();
+    fixture.detectChanges();
+    const peopleComponent = query(fixture, 'app-people');
+
+    expect(peopleComponent).toBeDefined();
+    expect(router.url).toBe('/people');
+  }));
+
+  it('should render PicoPreviewComponent', fakeAsync(() => {
+    triggerClickEventOnElement(fixture, 'pico-preview-link', true);
+
+    tick();
+    fixture.detectChanges();
+    const picoPreviewComponent = query(fixture, 'app-pico-preview');
+
+    expect(picoPreviewComponent).toBeDefined();
+    expect(router.url).toBe('/pico-preview');
   }));
 });
