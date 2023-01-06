@@ -76,11 +76,13 @@ export function queryAllByDirective<T, U>(
  *
  * @param fixture The fixture of the component to query
  * @param selector The CSS selector of the element to query
+ * @param withTestId Whether to use the test id or not
  * @returns The text content of the element with the given CSS selector
  */
 export function getTextContentBySelector<T>(
   fixture: ComponentFixture<T>,
-  selector: string
+  selector: string,
+  withTestId = false
 ): string {
-  return query(fixture, selector).nativeElement.textContent;
+  return query(fixture, selector, withTestId).nativeElement.textContent;
 }

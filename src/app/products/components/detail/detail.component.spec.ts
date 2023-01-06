@@ -4,7 +4,7 @@ import { ActivatedRoute, RouterModule } from '@angular/router';
 import { generateOneProduct } from '@models/mocks/product.mock';
 
 import { ProductService } from '@services/product.service';
-import { ActivatedRouteStub, observableData } from '@testing';
+import { ActivatedRouteStub, getTextContentBySelector, observableData, query } from '@testing';
 
 import { DetailComponent } from './detail.component';
 
@@ -13,7 +13,7 @@ describe('DetailComponent', () => {
   let fixture: ComponentFixture<DetailComponent>;
 
   let productServiceSpy: jasmine.SpyObj<ProductService>;
-  let activatedRouteSpy: ActivatedRouteStub;
+  let activatedRouteStub: ActivatedRouteStub;
   let locationSpy: jasmine.SpyObj<Location>;
 
   const product = generateOneProduct();
@@ -23,7 +23,7 @@ describe('DetailComponent', () => {
     const productServiceSpyObj = jasmine.createSpyObj('ProductService', [
       'getOne',
     ]);
-    const activatedRouteStub = new ActivatedRouteStub();
+    const activatedRouteStubValue = new ActivatedRouteStub();
     const locationSpyObj = jasmine.createSpyObj('Location', ['back']);
 
     await TestBed.configureTestingModule({
@@ -36,7 +36,7 @@ describe('DetailComponent', () => {
         },
         {
           provide: ActivatedRoute,
-          useValue: activatedRouteStub,
+          useValue: activatedRouteStubValue,
         },
         {
           provide: Location,
@@ -52,21 +52,34 @@ describe('DetailComponent', () => {
     productServiceSpy = TestBed.inject(
       ProductService
     ) as jasmine.SpyObj<ProductService>;
-    activatedRouteSpy = TestBed.inject(
+    activatedRouteStub = TestBed.inject(
       ActivatedRoute
     ) as unknown as ActivatedRouteStub;
     locationSpy = TestBed.inject(Location) as jasmine.SpyObj<Location>;
-
-    // Set up spies
-    productServiceSpy.getOne.and.returnValue(
-      observableData(product)
-    );
-    activatedRouteSpy.setParamMap({ id: productId });
-
-    fixture.detectChanges();
   });
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('should show the product in the view', () => {
+    // Set up spies
+    productServiceSpy.getOne.and.returnValue(
+      observableData(product)
+    );
+    activatedRouteStub.setParamMap({ id: productId });
+
+    fixture.detectChanges();
+
+    const productTitle = getTextContentBySelector(fixture, 'product-title', true);
+    const productImage = query(fixture, 'product-image', true).nativeElement.src;
+    const productPrice = getTextContentBySelector(fixture, 'product-price', true);
+
+    expect(component).toBeTruthy();
+    expect(productServiceSpy.getOne).toHaveBeenCalledWith(productId);
+
+    expect(productTitle).toContain(product.title);
+    expect(productImage).toBe(product.images[0]);
+    expect(productPrice).toContain(product.price.toString());
   });
 });
