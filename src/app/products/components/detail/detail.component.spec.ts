@@ -156,4 +156,37 @@ describe('DetailComponent', () => {
     expect(component.goToBack).toHaveBeenCalled();
     expect(locationSpy.back).toHaveBeenCalled();
   }));
+
+  it('should typeCustomer be \'null\'', () => {
+    // Set up spies
+    productServiceSpy.getOne.and.returnValue(asyncData(product));
+    activatedRouteStub.setParamMap({ id: productId });
+    activatedRouteStub.setQueryParamMap({ });
+
+    fixture.detectChanges();
+
+    expect(component.typeCustomer).toBeNull();
+  });
+
+  it('should typeCustomer be \'standard\'', () => {
+    // Set up spies
+    productServiceSpy.getOne.and.returnValue(asyncData(product));
+    activatedRouteStub.setParamMap({ id: productId });
+    activatedRouteStub.setQueryParamMap({ type: 'standard' });
+
+    fixture.detectChanges();
+
+    expect(component.typeCustomer).toBe('standard');
+  });
+
+  it('should typeCustomer be \'premium\'', () => {
+    // Set up spies
+    productServiceSpy.getOne.and.returnValue(asyncData(product));
+    activatedRouteStub.setParamMap({ id: productId });
+    activatedRouteStub.setQueryParamMap({ type: 'premium' });
+
+    fixture.detectChanges();
+
+    expect(component.typeCustomer).toBe('premium');
+  });
 });

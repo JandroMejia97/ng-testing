@@ -13,6 +13,7 @@ import { ProductService } from '@services/product.service';
 export class DetailComponent implements OnInit {
   product: Product | null = null;
   status: 'loading' | 'loaded' | 'error' | null = null;
+  typeCustomer: 'standard' | 'premium' | null = null;
 
   constructor(
     private route: ActivatedRoute,
@@ -28,6 +29,11 @@ export class DetailComponent implements OnInit {
       } else {
         this.goToBack();
       }
+    });
+
+    this.route.queryParamMap.subscribe((params) => {
+      const typeCustomer = params.get('type');
+      this.typeCustomer = typeCustomer as 'standard' | 'premium' | null;
     });
   }
 
