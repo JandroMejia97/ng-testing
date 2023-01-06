@@ -1,23 +1,28 @@
 /* eslint-disable no-useless-escape */
-import { AbstractControl, ValidationErrors } from "@angular/forms";
+import { AbstractControl, ValidationErrors } from '@angular/forms';
 
 /**
  * A collection of custom validators
  */
 export class CustomValidators {
-
   /**
    * A password validator that compares the password and confirmPassword fields
    * and checks if they match, if not it sets the error on the confirmPassword field.
    *
    * @param control The control to validate
+   * @param passwordName The name of the password field
+   * @param confirmPasswordName The name of the confirmPassword field
    * @returns An error map with the validation errors if any, otherwise null
    */
-  static passwordMatch(control: AbstractControl): ValidationErrors | null {
-    const password = control.get('password');
-    const confirmPassword = control.get('confirmPassword');
+  static passwordMatch(
+    control: AbstractControl,
+    passwordName = 'password',
+    confirmPasswordName = 'confirmPassword'
+  ): ValidationErrors | null {
+    const password = control.get(passwordName);
+    const confirmPassword = control.get(confirmPasswordName);
     if (!password || !confirmPassword) {
-      throw new Error("The form must have password and confirmPassword fields");
+      throw new Error(`The form must have '${passwordName}' and '${passwordName}' fields defined.`);
     }
     if (password.value !== confirmPassword.value) {
       confirmPassword.setErrors({ passwordMatch: true });
@@ -42,10 +47,18 @@ export class CustomValidators {
     const hasNumber = /\d/.test(password);
     const hasLowercase = /[a-z]/.test(password);
     const hasUppercase = /[A-Z]/.test(password);
-    const hasSpecialCharacters = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password);
+    const hasSpecialCharacters = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(
+      password
+    );
     const minLength = password?.length >= 8;
     let validationError: ValidationErrors | null = null;
-    if (!hasNumber || !hasLowercase || !hasUppercase || !hasSpecialCharacters || !minLength) {
+    if (
+      !hasNumber ||
+      !hasLowercase ||
+      !hasUppercase ||
+      !hasSpecialCharacters ||
+      !minLength
+    ) {
       validationError = { strongPassword: true };
     }
     return validationError;
@@ -75,7 +88,9 @@ export class CustomValidators {
    * @param control The control to validate
    * @returns An error map with the validation errors if any, otherwise null
    */
-  static atLeastOneLowercase(control: AbstractControl): ValidationErrors | null {
+  static atLeastOneLowercase(
+    control: AbstractControl
+  ): ValidationErrors | null {
     const password = control.value;
     const hasLowercase = /[a-z]/.test(password);
     let validationError: ValidationErrors | null = null;
@@ -92,7 +107,9 @@ export class CustomValidators {
    * @param control The control to validate
    * @returns An error map with the validation errors if any, otherwise null
    */
-  static atLeastOneUppercase(control: AbstractControl): ValidationErrors | null {
+  static atLeastOneUppercase(
+    control: AbstractControl
+  ): ValidationErrors | null {
     const password = control.value;
     const hasUppercase = /[A-Z]/.test(password);
     let validationError: ValidationErrors | null = null;
@@ -109,9 +126,13 @@ export class CustomValidators {
    * @param control The control to validate
    * @returns An error map with the validation errors if any, otherwise null
    */
-  static atLeastOneSpecialCharacter(control: AbstractControl): ValidationErrors | null {
+  static atLeastOneSpecialCharacter(
+    control: AbstractControl
+  ): ValidationErrors | null {
     const password = control.value;
-    const hasSpecialCharacters = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]+/.test(password);
+    const hasSpecialCharacters = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]+/.test(
+      password
+    );
     let validationError: ValidationErrors | null = null;
     if (!hasSpecialCharacters) {
       validationError = { atLeastOneSpecialCharacter: true };

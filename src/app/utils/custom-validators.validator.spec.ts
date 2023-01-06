@@ -32,7 +32,7 @@ describe('CustomValidators', () => {
       expect(result).toEqual({ passwordMatch: true });
     });
 
-    it('should throw an error if the password field isn\'t defined', () => {
+    it('should throw an error if the a field isn\'t defined', () => {
       formGroup.removeControl('password');
 
       expect(() => CustomValidators.passwordMatch(formGroup)).toThrowError();
@@ -144,8 +144,5 @@ describe('CustomValidators', () => {
         expect(result).toEqual({ atLeastOneSpecialCharacter: true });
       });
     });
-
   });
-
-
 });
