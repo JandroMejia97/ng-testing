@@ -2,6 +2,8 @@ import { defer, of, throwError } from 'rxjs';
 
 /**
  * Creates an observable that emits the given data and completes immediately.
+ * Use this function to create an observable that emits a single value
+ * inside fakeAsync.
  * @param data The data to emit.
  * @returns An observable that emits the given data and completes immediately.
  */

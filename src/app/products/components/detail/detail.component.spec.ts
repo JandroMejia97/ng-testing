@@ -1,10 +1,21 @@
 import { Location } from '@angular/common';
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import {
+  ComponentFixture,
+  fakeAsync,
+  TestBed,
+  tick,
+} from '@angular/core/testing';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { generateOneProduct } from '@models/mocks/product.mock';
 
 import { ProductService } from '@services/product.service';
-import { ActivatedRouteStub, getTextContentBySelector, observableData, query } from '@testing';
+import {
+  ActivatedRouteStub,
+  getTextContentBySelector,
+  asyncData,
+  asyncError,
+  query,
+} from '@testing';
 
 import { DetailComponent } from './detail.component';
 
@@ -15,6 +26,8 @@ describe('DetailComponent', () => {
   let productServiceSpy: jasmine.SpyObj<ProductService>;
   let activatedRouteStub: ActivatedRouteStub;
   let locationSpy: jasmine.SpyObj<Location>;
+
+  let textContext: string;
 
   const product = generateOneProduct();
   const productId = product.id;
@@ -41,7 +54,7 @@ describe('DetailComponent', () => {
         {
           provide: Location,
           useValue: locationSpyObj,
-        }
+        },
       ],
     }).compileComponents();
 
@@ -62,24 +75,85 @@ describe('DetailComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should show the product in the view', () => {
+  it('should show the product in the view', fakeAsync(() => {
     // Set up spies
-    productServiceSpy.getOne.and.returnValue(
-      observableData(product)
-    );
+    productServiceSpy.getOne.and.returnValue(asyncData(product));
     activatedRouteStub.setParamMap({ id: productId });
 
+    expect(component.status).toBeNull();
+    fixture.detectChanges();
+    expect(component.status).toBe('loading');
+    expect(component.product).toBeNull();
+
+    tick();
     fixture.detectChanges();
 
-    const productTitle = getTextContentBySelector(fixture, 'product-title', true);
-    const productImage = query(fixture, 'product-image', true).nativeElement.src;
-    const productPrice = getTextContentBySelector(fixture, 'product-price', true);
+    const productTitle = getTextContentBySelector(
+      fixture,
+      'product-title',
+      true
+    );
+    const productImage = query(fixture, 'product-image', true).nativeElement
+      .src;
+    const productPrice = getTextContentBySelector(
+      fixture,
+      'product-price',
+      true
+    );
 
-    expect(component).toBeTruthy();
-    expect(productServiceSpy.getOne).toHaveBeenCalledWith(productId);
+    textContext = 'should have called the service to get the product';
+    expect(productServiceSpy.getOne)
+      .withContext(textContext)
+      .toHaveBeenCalledWith(productId);
+    expect(component.status).toBe('loaded');
 
     expect(productTitle).toContain(product.title);
     expect(productImage).toBe(product.images[0]);
     expect(productPrice).toContain(product.price.toString());
+  }));
+
+  it('should go back to the previous page when the param is invalid', () => {
+    // Arrange
+    spyOn(component, 'goToBack').and.callThrough();
+    activatedRouteStub.setParamMap({});
+    locationSpy.back.and.callThrough();
+
+    // Act
+    expect(component.status).toBeNull();
+    fixture.detectChanges();
+    expect(component.status).toBeNull();
+
+    // Assert
+    expect(component.goToBack).toHaveBeenCalled();
+    expect(locationSpy.back).toHaveBeenCalled();
   });
+
+  it('should go back to the previous page when the product is not found', fakeAsync(() => {
+    // Set up spies
+    productServiceSpy.getOne.and.returnValue(
+      asyncError(new Error('Product not found'))
+    );
+    spyOn(component, 'goToBack').and.callThrough();
+    locationSpy.back.and.callThrough();
+
+    activatedRouteStub.setParamMap({ id: productId });
+
+    expect(component.status).toBeNull();
+    // Trigger ngOnInit
+    fixture.detectChanges();
+
+    expect(component.status).toBe('loading');
+    expect(component.product).toBeNull();
+
+    tick();
+
+    expect(component.status).toBe('error');
+
+    textContext = 'should have called the service to get the product';
+    expect(productServiceSpy.getOne)
+      .withContext(textContext)
+      .toHaveBeenCalledWith(productId);
+    expect(component.goToBack).toHaveBeenCalled();
+    expect(locationSpy.back).toHaveBeenCalled();
+  }));
 });
