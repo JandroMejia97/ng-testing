@@ -6,6 +6,7 @@ import { environment } from '@environments/environment';
 import { Auth } from '@models/auth.model';
 import { User } from '@models/user.model';
 import { TokenService } from '@services/token.service';
+import { BehaviorSubject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -13,11 +14,21 @@ import { TokenService } from '@services/token.service';
 export class AuthService {
 
   private apiUrl = `${environment.apiUrl}/api/v1/auth`;
+  private userBehaviorSubject = new BehaviorSubject<User | null>(null);
+  user$ = this.userBehaviorSubject.asObservable();
 
   constructor(
     private http: HttpClient,
     private tokenService: TokenService
   ) { }
+
+  getCurrentUser() {
+    const token = this.tokenService.getToken();
+    if (token) {
+      this.getProfile()
+      .subscribe()
+    }
+  }
 
   login(email: string, password: string) {
     return this.http.post<Auth>(`${this.apiUrl}/login`, {email, password})
@@ -35,5 +46,10 @@ export class AuthService {
     .pipe(
       switchMap(() => this.getProfile()),
     )
+  }
+
+  logout() {
+    this.tokenService.removeToken();
+    this.userBehaviorSubject.next(null);
   }
 }
