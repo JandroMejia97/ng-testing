@@ -17,7 +17,9 @@
             placeholder="Full Name"
             formControlName="name"
             [attr.aria-invalid]="nameField | hasErrors"/>
-          <small *ngIf="nameField | hasErrors">
+          <small
+            data-testId="name-required"
+            *ngIf="nameField | hasErrors">
             *Required
           </small>
         </label>
@@ -32,11 +34,15 @@
             formControlName="email"
             [attr.aria-invalid]="emailField | hasErrors"/>
           <ng-container *ngIf="emailField | hasErrors">
-            <small *ngIf="emailField | hasError: 'required'">
+            <small
+              data-testId="email-required"
+              *ngIf="emailField | hasError: 'required'">
               *Required
             </small>
-            <small *ngIf="emailField | hasError: 'email'">
-              *It's not a email
+            <small
+              data-testId="email-invalid"
+              *ngIf="emailField | hasError: 'email'">
+              *It's not a valid email
             </small>
           </ng-container>
         </label>
@@ -52,22 +58,34 @@
           formControlName="password"
           [attr.aria-invalid]="passwordField | hasErrors"/>
         <ng-container *ngIf="passwordField | hasErrors">
-          <small *ngIf="passwordField | hasError: 'required'">
+          <small
+            data-testId="password-required"
+            *ngIf="passwordField | hasError: 'required'">
             *Required
           </small>
-          <small *ngIf="(passwordField | hasErrors) && !(passwordField | hasError: 'required')">
+          <small
+            data-testId="password-should-contains"
+            *ngIf="(passwordField | hasErrors) && !(passwordField | hasError: 'required')">
             * Should contain:
             <ul>
-              <li *ngIf="passwordField | hasError: 'minlength'">
+              <li
+                data-testId="password-minlength-"
+                *ngIf="passwordField | hasError: 'minlength'">
                 At least 8 characters
               </li>
-              <li *ngIf="passwordField | hasError: 'atLeastOneUppercase'">
+              <li
+                data-testId="password-uppercase"
+                *ngIf="passwordField | hasError: 'atLeastOneUppercase'">
                 At least one uppercase
               </li>
-              <li *ngIf="passwordField | hasError: 'atLeastOneLowercase'">
+              <li
+                data-testId="password-lowercase"
+                *ngIf="passwordField | hasError: 'atLeastOneLowercase'">
                 At least one lowercase
               </li>
-              <li *ngIf="passwordField | hasError: 'atLeastOneNumber'">
+              <li
+                data-testId="password-number"
+                *ngIf="passwordField | hasError: 'atLeastOneNumber'">
                 At least one number
               </li>
             </ul>
@@ -85,10 +103,14 @@
           formControlName="confirmPassword"
           [attr.aria-invalid]="(confirmPasswordField | hasErrors)"/>
         <ng-container *ngIf="confirmPasswordField | hasErrors">
-          <small *ngIf="confirmPasswordField | hasError: 'required'">
+          <small
+            data-testId="confirm-password-required"
+            *ngIf="confirmPasswordField | hasError: 'required'">
             *Required
           </small>
-          <small *ngIf="confirmPasswordField | hasError: 'passwordMatch'">
+          <small
+            data-testId="confirm-password-match"
+            *ngIf="confirmPasswordField | hasError: 'passwordMatch'">
             *Not matching
           </small>
         </ng-container>
@@ -104,6 +126,11 @@
             [attr.aria-invalid]="checkTermsField | hasErrors"/>
           I agree to the Terms and Conditions
         </label>
+        <small
+          data-testId="check-terms-required"
+          *ngIf="checkTermsField | hasErrors">
+          * Should accept the terms and conditions
+        </small>
       </fieldset>
       <button type="submit">Register</button>
     </div>
