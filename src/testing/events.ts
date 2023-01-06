@@ -69,8 +69,9 @@ export function triggerEventOnElement(
 export function triggerClickEventOnElement(
   fixture: ComponentFixture<unknown>,
   selector: string,
-  withTestId = false,
-  eventObj?: EventInit
+  withTestId = false
 ): void {
-  triggerEventOnElement(fixture, selector, 'click', withTestId, eventObj);
+  const debugElement = query(fixture, selector, withTestId);
+  const element: HTMLElement = debugElement.nativeElement;
+  element.click();
 }

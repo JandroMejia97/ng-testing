@@ -47,21 +47,19 @@ describe('Events', () => {
 
   it('should trigger click event in the element', () => {
     const button = query(fixture, 'button');
-    const buttonSpy = spyOn(button.nativeElement, 'dispatchEvent');
-    const event = new Event('click');
+    const buttonSpy = spyOn(button.nativeElement, 'click');
 
-    triggerClickEventOnElement(fixture, 'button', false, event);
+    triggerClickEventOnElement(fixture, 'button', false);
 
-    expect(buttonSpy).toHaveBeenCalledWith(event);
+    expect(buttonSpy).toHaveBeenCalledTimes(1);
   });
 
   it('should trigger click event in the element with TestId', () => {
     const button = query(fixture, 'button');
-    const buttonSpy = spyOn(button.nativeElement, 'dispatchEvent');
-    const event = new Event('click');
+    const buttonSpy = spyOn(button.nativeElement, 'click');
 
-    triggerClickEventOnElement(fixture, 'testButton', true, event);
+    triggerClickEventOnElement(fixture, 'testButton', true);
 
-    expect(buttonSpy).toHaveBeenCalledWith(event);
+    expect(buttonSpy).toHaveBeenCalledTimes(1);
   });
 });

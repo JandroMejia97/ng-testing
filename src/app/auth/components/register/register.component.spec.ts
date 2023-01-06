@@ -12,7 +12,15 @@ import { faker } from '@faker-js/faker';
 import { UserService } from '@auth/services/user.service';
 import { CreateUserDTO, User } from '@models/user.model';
 import { SharedModule } from '@shared/shared.module';
-import { setValueOnInputElement, query, observableData, observableError } from '@testing';
+import {
+  setValueOnInputElement,
+  query,
+  observableData,
+  observableError,
+  searchAndSetValueOnInputElement,
+  searchAndSetValueOnCheckboxElement,
+  triggerClickEventOnElement,
+} from '@testing';
 
 import { RegisterComponent } from './register.component';
 
@@ -364,13 +372,58 @@ describe('RegisterComponent', () => {
       expect(registerSpy).withContext(textContent).toHaveBeenCalledTimes(1);
 
       textContent = 'The form should be invalid';
-      expect(component.formGroup.status).withContext(textContent).toEqual('INVALID');
+      expect(component.formGroup.status)
+        .withContext(textContent)
+        .toEqual('INVALID');
       textContent = 'The form should be touched';
-      expect(component.formGroup.touched).withContext(textContent).toBeTruthy()
+      expect(component.formGroup.touched).withContext(textContent).toBeTruthy();
       Object.entries(component.formGroup.controls).forEach(([key, control]) => {
         textContent = `The control '${key}' should be dirty`;
         expect(control.dirty).withContext(textContent).toBeTruthy();
       });
     });
+
+    it('should send the data to server successfully from UI', fakeAsync(() => {
+      searchAndSetValueOnInputElement(fixture, 'input#name', mockData.name);
+      searchAndSetValueOnInputElement(fixture, 'input#email', mockData.email);
+      searchAndSetValueOnInputElement(
+        fixture,
+        'input#password',
+        mockData.password
+      );
+      searchAndSetValueOnInputElement(
+        fixture,
+        'input#confirmPassword',
+        mockData.confirmPassword
+      );
+      searchAndSetValueOnCheckboxElement(
+        fixture,
+        'input#terms',
+        mockData.checkTerms
+      );
+
+      const registerSpy = spyOn(component, 'register').and.callThrough();
+      userServiceSpy.create.and.returnValue(observableData(mockUser));
+
+      // Act
+      expect(component.status).toEqual('success');
+      triggerClickEventOnElement(fixture, 'register-button', true);
+      fixture.detectChanges();
+
+      tick();
+      fixture.detectChanges();
+
+      // Assert
+      let textContent = 'The register method should be called';
+      expect(registerSpy).withContext(textContent).toHaveBeenCalledTimes(1);
+
+      textContent = 'The create method should be called';
+      expect(userServiceSpy.create)
+        .withContext(textContent)
+        .toHaveBeenCalledOnceWith(mockData);
+
+      textContent = 'The response should be handled and the status updated';
+      expect(component.status).withContext(textContent).toEqual('success');
+    }));
   });
 });
