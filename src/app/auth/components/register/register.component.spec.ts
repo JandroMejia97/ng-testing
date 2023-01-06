@@ -286,17 +286,12 @@ describe('RegisterComponent', () => {
     it('should send the data to server successfully', fakeAsync(() => {
       // Arrange
       component.formGroup.patchValue(mockData);
-      const buttonElement: HTMLButtonElement = query(
-        fixture,
-        'register-button',
-        true
-      ).nativeElement;
       const registerSpy = spyOn(component, 'register').and.callThrough();
       userServiceSpy.create.and.returnValue(observableData(mockUser));
 
       // Act
       expect(component.status).toEqual('success');
-      buttonElement.click();
+      triggerClickEventOnElement(fixture, 'register-button', true);
       fixture.detectChanges();
       // expect(component.status).toEqual('loading');
 
@@ -305,7 +300,6 @@ describe('RegisterComponent', () => {
 
       // Assert
       let textContent = 'The register method should be called';
-      expect(buttonElement).toBeDefined();
       expect(registerSpy).withContext(textContent).toHaveBeenCalledTimes(1);
 
       textContent = 'The create method should be called';
@@ -317,7 +311,7 @@ describe('RegisterComponent', () => {
       expect(component.status).withContext(textContent).toEqual('success');
     }));
 
-    it('should handle the error', fakeAsync(() => {
+    it('should handle the error from server', fakeAsync(() => {
       // Arrange
       component.formGroup.patchValue(mockData);
       const buttonElement: HTMLButtonElement = query(
@@ -354,21 +348,15 @@ describe('RegisterComponent', () => {
 
     it('should handle the error when the form is not valid', () => {
       // Arrange
-      const buttonElement: HTMLButtonElement = query(
-        fixture,
-        'register-button',
-        true
-      ).nativeElement;
       const registerSpy = spyOn(component, 'register').and.callThrough();
 
       // Act
       expect(component.status).toEqual('success');
-      buttonElement.click();
+      triggerClickEventOnElement(fixture, 'register-button', true);
       fixture.detectChanges();
 
       // Assert
       let textContent = 'The register method should be called';
-      expect(buttonElement).toBeDefined();
       expect(registerSpy).withContext(textContent).toHaveBeenCalledTimes(1);
 
       textContent = 'The form should be invalid';
