@@ -71,7 +71,7 @@ describe('AuthGuard', () => {
     guard.canActivate(route, state).subscribe({
       next: (value) => {
         expect(value).toBeFalse();
-        expect(routerSpy.navigate).toHaveBeenCalledWith(['/home']);
+        expect(routerSpy.navigate).toHaveBeenCalledWith(['/']);
       },
     });
   }));
