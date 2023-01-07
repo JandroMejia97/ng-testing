@@ -8,7 +8,9 @@
   <p>
     {{ product.description }}
   </p>
-  <a [routerLink]="['./', product.id]">
+  <a
+    data-testId="see-more-link"
+    [routerLink]="['./', product.id]">
     See more
   </a>
 </div>

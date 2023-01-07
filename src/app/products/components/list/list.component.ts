@@ -4,11 +4,11 @@ import { ValueService } from '@services/value.service';
 import { ProductService } from 'src/app/services/product.service';
 
 @Component({
-  selector: 'app-products',
-  templateUrl: './products.component.html',
-  styleUrls: ['./products.component.scss'],
+  selector: 'app-list',
+  templateUrl: './list.component.html',
+  styleUrls: ['./list.component.scss'],
 })
-export class ProductsComponent implements OnInit {
+export class ListComponent implements OnInit {
   products: Product[] = [];
   status: 'loading' | 'error' | 'success' = 'success';
   response = '';

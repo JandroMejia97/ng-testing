@@ -17,7 +17,7 @@ import { routes } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { AppModule } from './app.module';
 
-fdescribe('AppIntegration', () => {
+describe('AppIntegration', () => {
   let fixture: ComponentFixture<AppComponent>;
   let component: AppComponent;
   let router: Router;

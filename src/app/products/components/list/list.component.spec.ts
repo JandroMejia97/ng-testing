@@ -20,12 +20,12 @@ import {
   query
 } from '@testing';
 
-import { ProductsComponent } from './products.component';
+import { ListComponent } from './list.component';
 import { RouterTestingModule } from '@angular/router/testing';
 
-describe('ProductsComponent', () => {
-  let component: ProductsComponent;
-  let fixture: ComponentFixture<ProductsComponent>;
+describe('ListComponent', () => {
+  let component: ListComponent;
+  let fixture: ComponentFixture<ListComponent>;
   let productServiceSpy: jasmine.SpyObj<ProductService>;
 
   beforeEach(async () => {
@@ -44,7 +44,7 @@ describe('ProductsComponent', () => {
     );
 
     await TestBed.configureTestingModule({
-      declarations: [ProductsComponent, ProductComponent],
+      declarations: [ListComponent, ProductComponent],
       imports: [RouterTestingModule],
       providers: [
         {
@@ -60,7 +60,7 @@ describe('ProductsComponent', () => {
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(ProductsComponent);
+    fixture = TestBed.createComponent(ListComponent);
     component = fixture.componentInstance;
 
     productServiceSpy = TestBed.inject(
